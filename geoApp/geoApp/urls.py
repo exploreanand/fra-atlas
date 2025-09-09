@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from shp.views import index
+from shp.views import index, get_claimants_data, get_available_villages
 from note.views import note
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',index, name='index' ),
-    path('note/', note, name='note')
+    path('note/', note, name='note'),
+    path('api/claimants/', get_claimants_data, name='get_claimants_data'),
+    path('api/villages/', get_available_villages, name='get_available_villages')
 ]

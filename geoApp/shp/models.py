@@ -38,6 +38,24 @@ class Shp(models.Model):
         return self.name
 
 
+class Claimant(models.Model):
+    serial_number = models.IntegerField()
+    claimant_name = models.CharField(max_length=200)
+    code_13_digit = models.CharField(max_length=20)
+    claim_number = models.CharField(max_length=20, null=True, blank=True)
+    gat_number = models.CharField(max_length=20, null=True, blank=True)
+    area = models.CharField(max_length=20)  # Using CharField to handle "Illegible" values
+    village_name = models.CharField(max_length=100, default='Pimpalgaon Khu')
+    taluka = models.CharField(max_length=100, default='Sakri')
+    district = models.CharField(max_length=100, default='Dhule')
+
+    def __str__(self):
+        return f"{self.serial_number} - {self.claimant_name}"
+
+    class Meta:
+        unique_together = ['serial_number', 'village_name']
+
+
 # Django post save signal
 @receiver(post_save, sender=Shp)
 def public_data(sender, instance, created, **kwargs):
@@ -92,6 +110,37 @@ def public_data(sender, instance, created, **kwargs):
 
     # For styling of layer
     geo.create_outline_featurestyle('geoApp_shp', workspace='geoapp')
+    
+    # Create highlighted style for matching features (red fill and stroke)
+    try:
+        # Create a proper red highlighting SLD
+        highlighted_sld = """<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NamedLayer>
+    <Name>highlighted_layer</Name>
+    <UserStyle>
+      <Title>Red Highlighted Features</Title>
+      <FeatureTypeStyle>
+        <Rule>
+          <Title>Red Highlight</Title>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#FF0000</CssParameter>
+              <CssParameter name="fill-opacity">0.7</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#CC0000</CssParameter>
+              <CssParameter name="stroke-width">2</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>"""
+        geo.upload_style(path=None, workspace='geoapp', style_name='geoApp_shp_highlighted', sld_body=highlighted_sld)
+    except Exception as e:
+        print(f"Warning: Could not create highlighted style: {e}")
 
     geo.publish_style(
         layer_name=name, style_name='geoApp_shp', workspace='geoapp')

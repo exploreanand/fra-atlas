@@ -1,0 +1,490 @@
+{
+    "document_details": {
+      "title": "Information on forest dwellers and their 13-digit codes in reference to the titles distributed to eligible claimants",
+      "village_name": "Mohagoan",
+      "taluka": "Sakri",
+      "district": "Dhule"
+    },
+    "claimants": [
+      {
+        "serial_number": 1,
+        "claimant_name": "Sonu Balu Chaure",
+        "code_13_digit": "0203Moh01SBC0",
+        "claim_number": "214",
+        "gat_number": "300",
+        "area": 3.15
+      },
+      {
+        "serial_number": 2,
+        "claimant_name": "Vindha Dhondu Gavali",
+        "code_13_digit": "0203Moh01CDG0",
+        "claim_number": "215",
+        "gat_number": "300",
+        "area": 2.29
+      },
+      {
+        "serial_number": 3,
+        "claimant_name": "Kalubai Bharya Chaudhari",
+        "code_13_digit": "0203Moh01KBC0",
+        "claim_number": "216",
+        "gat_number": null,
+        "area": 1.94
+      },
+      {
+        "serial_number": 4,
+        "claimant_name": "Shanyabhai Dasnya Sonvane",
+        "code_13_digit": "0203Moh01SDP0",
+        "claim_number": "217",
+        "gat_number": null,
+        "area": 1.78
+      },
+      {
+        "serial_number": 5,
+        "claimant_name": "Kashiram Kolya Mahale",
+        "code_13_digit": "0203Moh01KKN0",
+        "claim_number": "218",
+        "gat_number": null,
+        "area": 2.95
+      },
+      {
+        "serial_number": 6,
+        "claimant_name": "Hadgya Laxman Malche",
+        "code_13_digit": "0203Moh01HLM0",
+        "claim_number": "219",
+        "gat_number": null,
+        "area": 2.19
+      },
+      {
+        "serial_number": 7,
+        "claimant_name": "Janya Vanya Desai",
+        "code_13_digit": "0203Moh01JVD0",
+        "claim_number": "220",
+        "gat_number": null,
+        "area": 2.68
+      },
+      {
+        "serial_number": 8,
+        "claimant_name": "Rajaram Manglu Gangurde",
+        "code_13_digit": "0203Moh01RMG0",
+        "claim_number": "221",
+        "gat_number": null,
+        "area": 3.49
+      },
+      {
+        "serial_number": 9,
+        "claimant_name": "Dhaklu Motiram Chaure",
+        "code_13_digit": "0203Moh01DMC0",
+        "claim_number": "222",
+        "gat_number": null,
+        "area": 1.16
+      },
+      {
+        "serial_number": 10,
+        "claimant_name": "Pavru Chila Chaure",
+        "code_13_digit": "0203Moh01PCC0",
+        "claim_number": "223",
+        "gat_number": null,
+        "area": 1.88
+      },
+      {
+        "serial_number": 11,
+        "claimant_name": "Pundlik Laxman Gavali",
+        "code_13_digit": "0203Moh01PLG0",
+        "claim_number": "224",
+        "gat_number": null,
+        "area": 2.52
+      },
+      {
+        "serial_number": 12,
+        "claimant_name": "Kesharbai Lahnu Malche",
+        "code_13_digit": "0203Moh01KLM0",
+        "claim_number": "225",
+        "gat_number": null,
+        "area": 2.13
+      },
+      {
+        "serial_number": 13,
+        "claimant_name": "Budhya Rama Badhir",
+        "code_13_digit": "0203Moh01BRB0",
+        "claim_number": "226",
+        "gat_number": null,
+        "area": 2.75
+      },
+      {
+        "serial_number": 14,
+        "claimant_name": "Rogya Kalu Raut",
+        "code_13_digit": "0203Moh01RKR0",
+        "claim_number": "227",
+        "gat_number": null,
+        "area": 3.01
+      },
+      {
+        "serial_number": 15,
+        "claimant_name": "Bajya Umda Pavar",
+        "code_13_digit": "0203Moh01BUP0",
+        "claim_number": "228",
+        "gat_number": null,
+        "area": 1.17
+      },
+      {
+        "serial_number": 16,
+        "claimant_name": "Shidu Shivram Malche",
+        "code_13_digit": "0203Moh01SSM0",
+        "claim_number": "229",
+        "gat_number": null,
+        "area": 2.55
+      },
+      {
+        "serial_number": 17,
+        "claimant_name": "Sapsu Tanu Bhoye",
+        "code_13_digit": "0203Moh01STB0",
+        "claim_number": "230",
+        "gat_number": null,
+        "area": 1.58
+      },
+      {
+        "serial_number": 18,
+        "claimant_name": "Pandit Kashiram Mahale",
+        "code_13_digit": "0203Moh01KHMO",
+        "claim_number": "231",
+        "gat_number": null,
+        "area": 2.57
+      },
+      {
+        "serial_number": 19,
+        "claimant_name": "Isru Kolsha Mahale",
+        "code_13_digit": "0203Moh01IKM0",
+        "claim_number": "232",
+        "gat_number": null,
+        "area": 4.00
+      },
+      {
+        "serial_number": 20,
+        "claimant_name": "Sanvachya Dunya Sonvane",
+        "code_13_digit": "0203Moh01STS0",
+        "claim_number": "233",
+        "gat_number": null,
+        "area": 1.87
+      },
+      {
+        "serial_number": 21,
+        "claimant_name": "Maharibai Chmar Bhoye",
+        "code_13_digit": "0203Moh01MCB0",
+        "claim_number": "234",
+        "gat_number": null,
+        "area": 2.91
+      },
+      {
+        "serial_number": 22,
+        "claimant_name": "Sonvane Shamjya Vakharya",
+        "code_13_digit": "0203Moh01SUS0",
+        "claim_number": "235",
+        "gat_number": null,
+        "area": 0.88
+      },
+      {
+        "serial_number": 23,
+        "claimant_name": "Budha Sonya Pavara",
+        "code_13_digit": "0203Moh01BSP0",
+        "claim_number": "236",
+        "gat_number": null,
+        "area": 1.73
+      },
+      {
+        "serial_number": 24,
+        "claimant_name": "Bhadu Motiram Chaure",
+        "code_13_digit": "0203Moh01BMC0",
+        "claim_number": "237",
+        "gat_number": null,
+        "area": 1.39
+      },
+      {
+        "serial_number": 25,
+        "claimant_name": "Nura Vanya Sonvane",
+        "code_13_digit": "0203Moh01NVS0",
+        "claim_number": "238",
+        "gat_number": null,
+        "area": 1.32
+      },
+      {
+        "serial_number": 26,
+        "claimant_name": "Mangalya Reshma Sonvane",
+        "code_13_digit": "0203Moh01MRS0",
+        "claim_number": "239",
+        "gat_number": null,
+        "area": 2.50
+      },
+      {
+        "serial_number": 27,
+        "claimant_name": "Puja Rupala Ahire",
+        "code_13_digit": "0203Moh01PRA0",
+        "claim_number": "240",
+        "gat_number": null,
+        "area": 0.73
+      },
+      {
+        "serial_number": 28,
+        "claimant_name": "Chaitram Chamar Pawar",
+        "code_13_digit": "0203Moh01CCP0",
+        "claim_number": "241",
+        "gat_number": "170",
+        "area": 2.49
+      },
+      {
+        "serial_number": 29,
+        "claimant_name": "Sonya Manglu Gangurde",
+        "code_13_digit": "0203Moh01SMG0",
+        "claim_number": "242",
+        "gat_number": null,
+        "area": 2.62
+      },
+      {
+        "serial_number": 30,
+        "claimant_name": "Dhondu Budha Malusare",
+        "code_13_digit": "0203Moh01DBM0",
+        "claim_number": "243",
+        "gat_number": null,
+        "area": 1.04
+      },
+      {
+        "serial_number": 31,
+        "claimant_name": "Sudha Kasha Mahale",
+        "code_13_digit": "0203Moh01RKM0",
+        "claim_number": "244",
+        "gat_number": null,
+        "area": 3.20
+      },
+      {
+        "serial_number": 32,
+        "claimant_name": "Dhidu Fulji Pavar",
+        "code_13_digit": "0203Moh01DFP0",
+        "claim_number": "245",
+        "gat_number": null,
+        "area": 1.61
+      },
+      {
+        "serial_number": 33,
+        "claimant_name": "Vanu Gotya Badhir",
+        "code_13_digit": "0203Moh01VGB0",
+        "claim_number": "246",
+        "gat_number": null,
+        "area": 2.16
+      },
+      {
+        "serial_number": 34,
+        "claimant_name": "Bajya Jiva Sonvane",
+        "code_13_digit": "0203Moh01BJS0",
+        "claim_number": "248",
+        "gat_number": null,
+        "area": 1.58
+      },
+      {
+        "serial_number": 35,
+        "claimant_name": "Murlidhar Pavlu Chaure",
+        "code_13_digit": "0203Moh01MPC0",
+        "claim_number": "249",
+        "gat_number": null,
+        "area": 1.46
+      },
+      {
+        "serial_number": 36,
+        "claimant_name": "Manya Sonya Sonvane",
+        "code_13_digit": "0203Moh01MSS0",
+        "claim_number": "250",
+        "gat_number": null,
+        "area": 2.61
+      },
+      {
+        "serial_number": 37,
+        "claimant_name": "Samkubai Lahnu Chaudhari",
+        "code_13_digit": "0203Moh01SLC0",
+        "claim_number": "251",
+        "gat_number": null,
+        "area": 1.48
+      },
+      {
+        "serial_number": 38,
+        "claimant_name": "Tanya Chiman Pavar",
+        "code_13_digit": "0203Moh01TCP0",
+        "claim_number": "252",
+        "gat_number": null,
+        "area": 0.93
+      },
+      {
+        "serial_number": 39,
+        "claimant_name": "Navsha Dega Gaikwad",
+        "code_13_digit": "0203Moh01NDG1",
+        "claim_number": "253",
+        "gat_number": null,
+        "area": 2.26
+      },
+      {
+        "serial_number": 40,
+        "claimant_name": "Maharu Janya Pavar",
+        "code_13_digit": "0203Moh01MJP0",
+        "claim_number": "254",
+        "gat_number": null,
+        "area": 1.85
+      },
+      {
+        "serial_number": 41,
+        "claimant_name": "Budha Tanu Moye",
+        "code_13_digit": "0203Moh01BTB0",
+        "claim_number": "255",
+        "gat_number": null,
+        "area": 0.77
+      },
+      {
+        "serial_number": 42,
+        "claimant_name": "Rajya Umda Pavar",
+        "code_13_digit": "0203Moh01RUP0",
+        "claim_number": "256",
+        "gat_number": null,
+        "area": 1.55
+      },
+      {
+        "serial_number": 43,
+        "claimant_name": "Gatclya Miva Malche",
+        "code_13_digit": "0203Moh01GBM0",
+        "claim_number": "257",
+        "gat_number": null,
+        "area": 0.79
+      },
+      {
+        "serial_number": 44,
+        "claimant_name": "Mangalya Mahadu Bhadane",
+        "code_13_digit": "0203Moh01GMA0",
+        "claim_number": "258",
+        "gat_number": null,
+        "area": 1.58
+      },
+      {
+        "serial_number": 45,
+        "claimant_name": "Kondu Sada Ahire",
+        "code_13_digit": "0203Moh01KSA0",
+        "claim_number": "259",
+        "gat_number": null,
+        "area": 2.10
+      },
+      {
+        "serial_number": 46,
+        "claimant_name": "Mirabai Bansi Gangurde",
+        "code_13_digit": "0203Moh01MVC0",
+        "claim_number": "260",
+        "gat_number": null,
+        "area": 2.16
+      },
+      {
+        "serial_number": 47,
+        "claimant_name": "Banya Sonya Thakare",
+        "code_13_digit": "0203Moh01BST0",
+        "claim_number": "261",
+        "gat_number": null,
+        "area": 2.80
+      },
+      {
+        "serial_number": 48,
+        "claimant_name": "Bandu Devan Pavar",
+        "code_13_digit": "0203Moh01BDP0",
+        "claim_number": "262",
+        "gat_number": null,
+        "area": 2.32
+      },
+      {
+        "serial_number": 49,
+        "claimant_name": "Gamjya Ukhadya Sonvane",
+        "code_13_digit": "0203Moh01GUS0",
+        "claim_number": "263",
+        "gat_number": null,
+        "area": 1.11
+      },
+      {
+        "serial_number": 50,
+        "claimant_name": "Aasha Kolsha Mahale",
+        "code_13_digit": "0203Moh01AKM0",
+        "claim_number": "264",
+        "gat_number": null,
+        "area": 3.70
+      },
+      {
+        "serial_number": 51,
+        "claimant_name": "Babajya Mahadu Pavar",
+        "code_13_digit": "0203Moh01MDP0",
+        "claim_number": "265",
+        "gat_number": null,
+        "area": 1.11
+      },
+      {
+        "serial_number": 52,
+        "claimant_name": "Mangalya Mahadu Bhadane",
+        "code_13_digit": "0203Moh01MMBO",
+        "claim_number": "276",
+        "gat_number": "100",
+        "area": 0.48
+      },
+      {
+        "serial_number": 53,
+        "claimant_name": "Rupla Mondhya Ahire",
+        "code_13_digit": "0203Moh01RMAO",
+        "claim_number": "277",
+        "gat_number": null,
+        "area": 2.66
+      },
+      {
+        "serial_number": 54,
+        "claimant_name": "Kumar Laxman Gavali",
+        "code_13_digit": "0203Moh01KLGO",
+        "claim_number": "278",
+        "gat_number": null,
+        "area": 2.04
+      },
+      {
+        "serial_number": 55,
+        "claimant_name": "Sitaram Hulya Ahire",
+        "code_13_digit": "0203Moh01SHAO",
+        "claim_number": "279",
+        "gat_number": null,
+        "area": 3.10
+      },
+      {
+        "serial_number": 56,
+        "claimant_name": "Nibya Ghodu Gavali",
+        "code_13_digit": "0203Moh01NDGO",
+        "claim_number": "280",
+        "gat_number": null,
+        "area": 1.59
+      },
+      {
+        "serial_number": 57,
+        "claimant_name": "Bharajubai Lasu Deshmukh",
+        "code_13_digit": "0203Moh01BLDO",
+        "claim_number": "281",
+        "gat_number": null,
+        "area": 3.10
+      },
+      {
+        "serial_number": 58,
+        "claimant_name": "Muralya Navsha Gaikwad",
+        "code_13_digit": "0203Moh01MNG1",
+        "claim_number": "282",
+        "gat_number": null,
+        "area": 1.33
+      },
+      {
+        "serial_number": 59,
+        "claimant_name": "Pavlya Mondhya Ahire",
+        "code_13_digit": "0203Moh01PMAO",
+        "claim_number": "283",
+        "gat_number": null,
+        "area": 1.89
+      },
+      {
+        "serial_number": 70,
+        "claimant_name": "Punaji Dongar Malsure",
+        "code_13_digit": "0203Moh01PDMO",
+        "claim_number": "3167",
+        "gat_number": null,
+        "area": 0.10
+      }
+    ]
+  }

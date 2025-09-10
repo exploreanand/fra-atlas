@@ -1,0 +1,130 @@
+{
+    "document_details": {
+      "title": "Information on forest dwellers and their 13-digit codes in reference to the titles distributed to eligible claimants",
+      "village_name": "Jambhore",
+      "taluka": "Sakri",
+      "district": "Dhule"
+    },
+    "claimants": [
+      {
+        "serial_number": 1,
+        "claimant_name": "Yelu Bala Pawar",
+        "code_13_digit": "0201Jam01YBPO",
+        "claim_number": "1780",
+        "gat_number": "444",
+        "area": 2.18
+      },
+      {
+        "serial_number": 2,
+        "claimant_name": "Shama Dhavalya Malche",
+        "code_13_digit": "0201Jam01SDMO",
+        "claim_number": "1781",
+        "gat_number": "444",
+        "area": 1.71
+      },
+      {
+        "serial_number": 3,
+        "claimant_name": "Dhavalya Ragho Malche",
+        "code_13_digit": "0201Jam01DRMO",
+        "claim_number": "1782",
+        "gat_number": "444",
+        "area": 3.04
+      },
+      {
+        "serial_number": 4,
+        "claimant_name": "Shama Rama Malche",
+        "code_13_digit": "0201Jam01SRMO",
+        "claim_number": "1783",
+        "gat_number": "444",
+        "area": 2.13
+      },
+      {
+        "serial_number": 5,
+        "claimant_name": "Parasharam Manya Malche",
+        "code_13_digit": "0201Jam01PMMO",
+        "claim_number": "1785",
+        "gat_number": "445",
+        "area": 1.11
+      },
+      {
+        "serial_number": 6,
+        "claimant_name": "Maharu Lagu Desai",
+        "code_13_digit": "0201Jam01MLD1",
+        "claim_number": "1786",
+        "gat_number": "444",
+        "area": 3.54
+      },
+      {
+        "serial_number": 7,
+        "claimant_name": "Budha Shankar Pawar",
+        "code_13_digit": "0201Jam01BSP1",
+        "claim_number": "1787",
+        "gat_number": "445",
+        "area": 2.26
+      },
+      {
+        "serial_number": 8,
+        "claimant_name": "Gorakh Shivram Sonvane",
+        "code_13_digit": "0201Jam01GSSO",
+        "claim_number": "1788",
+        "gat_number": "444",
+        "area": 2.47
+      },
+      {
+        "serial_number": 9,
+        "claimant_name": "Raghunath Daga More",
+        "code_13_digit": "0201Jam01RDMO",
+        "claim_number": "1789",
+        "gat_number": "444",
+        "area": 1.96
+      },
+      {
+        "serial_number": 10,
+        "claimant_name": "Mangubai Mangalya Malche",
+        "code_13_digit": "0201Jam01MMMO",
+        "claim_number": "1791",
+        "gat_number": "444",
+        "area": 1.87
+      },
+      {
+        "serial_number": 11,
+        "claimant_name": "Damu Goma Malche",
+        "code_13_digit": "0201Jam01DGMO",
+        "claim_number": "1793",
+        "gat_number": "444",
+        "area": 1.41
+      },
+      {
+        "serial_number": 12,
+        "claimant_name": "Sakubai Namu Malche",
+        "code_13_digit": "0201Jam01NGMO",
+        "claim_number": "1794",
+        "gat_number": "445",
+        "area": 1.56
+      },
+      {
+        "serial_number": 13,
+        "claimant_name": "Vasant Nimba Pawar",
+        "code_13_digit": "0201Jam01VNPO",
+        "claim_number": "1795",
+        "gat_number": "445",
+        "area": 1.55
+      },
+      {
+        "serial_number": 14,
+        "claimant_name": "Motiram Rama Malche",
+        "code_13_digit": "0201Jam01MRMO",
+        "claim_number": "1796",
+        "gat_number": "444",
+        "area": 3.28
+      },
+      {
+        "serial_number": 15,
+        "claimant_name": "Lagu Kalu Malche",
+        "code_13_digit": "0201Jam01LKMO",
+        "claim_number": "1797",
+        "gat_number": "444",
+        "area": 1.89
+      }
+    ]
+  }

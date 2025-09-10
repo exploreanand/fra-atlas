@@ -1,0 +1,290 @@
+{
+  "document_details": {
+    "title": "Information on forest dwellers and their 13-digit codes in reference to the titles distributed to eligible claimants",
+    "village_name": "Pimpalgaon Khu",
+    "taluka": "Sakri",
+    "district": "Dhule"
+  },
+  "claimants": [
+    {
+      "serial_number": 1,
+      "claimant_name": "Shama Soma Deshmukh",
+      "code_13_digit": "0203Pim01SSD0",
+      "claim_number": null,
+      "gat_number": "2-09",
+      "area": "3.09"
+    },
+    {
+      "serial_number": 2,
+      "claimant_name": "Suka Mila Gaikwad",
+      "code_13_digit": "0203Pim01SBG0",
+      "claim_number": null,
+      "gat_number": null,
+      "area": "2.47"
+    },
+    {
+      "serial_number": 3,
+      "claimant_name": "Sakharya Joga Malvi",
+      "code_13_digit": "0203Pim01SJM0",
+      "claim_number": "180",
+      "gat_number": null,
+      "area": "2.95"
+    },
+    {
+      "serial_number": 4,
+      "claimant_name": "Hatya Bherya Baris",
+      "code_13_digit": "0203Pim01HBB0",
+      "claim_number": "181",
+      "gat_number": null,
+      "area": "2.34"
+    },
+    {
+      "serial_number": 5,
+      "claimant_name": "Sonya Babula Desai",
+      "code_13_digit": "0203Pim01SDB0",
+      "claim_number": "182",
+      "gat_number": null,
+      "area": "1.46"
+    },
+    {
+      "serial_number": 6,
+      "claimant_name": "Lakadya Mukka Valvi",
+      "code_13_digit": "0203Pim01PLV0",
+      "claim_number": "183",
+      "gat_number": null,
+      "area": "1.78"
+    },
+    {
+      "serial_number": 7,
+      "claimant_name": "Appa Sonu Gaikwad",
+      "code_13_digit": "0203Pim01ASG0",
+      "claim_number": "184",
+      "gat_number": null,
+      "area": "1.42"
+    },
+    {
+      "serial_number": 8,
+      "claimant_name": "Beshya Kasha Gogurde",
+      "code_13_digit": "0203Pim01BKG0",
+      "claim_number": "185",
+      "gat_number": null,
+      "area": "1.58"
+    },
+    {
+      "serial_number": 9,
+      "claimant_name": "Pimpalgaon Gangaram Pawar",
+      "code_13_digit": "0203Pim01DGP0",
+      "claim_number": "186",
+      "gat_number": null,
+      "area": "3.03"
+    },
+    {
+      "serial_number": 10,
+      "claimant_name": "Pudya Mahadu Bhoye",
+      "code_13_digit": "0203Pim01PMB0",
+      "claim_number": "188",
+      "gat_number": null,
+      "area": "Illegible"
+    },
+    {
+      "serial_number": 11,
+      "claimant_name": "Jivlya Lakadya Valvi",
+      "code_13_digit": "0203Pim01JLV0",
+      "claim_number": "189",
+      "gat_number": null,
+      "area": "Illegible"
+    },
+    {
+      "serial_number": 12,
+      "claimant_name": "Baba Lala Desai",
+      "code_13_digit": "0203Pim01BLD0",
+      "claim_number": "190",
+      "gat_number": null,
+      "area": "0.72"
+    },
+    {
+      "serial_number": 13,
+      "claimant_name": "Sonya Dhedya Kuvar",
+      "code_13_digit": "0203Pim01SDK0",
+      "claim_number": "191",
+      "gat_number": null,
+      "area": "1.65"
+    },
+    {
+      "serial_number": 14,
+      "claimant_name": "Daga Kolsha Gaikwad",
+      "code_13_digit": "0203Pim01DKG0",
+      "claim_number": "192",
+      "gat_number": null,
+      "area": "0.59"
+    },
+    {
+      "serial_number": 15,
+      "claimant_name": "Baburao Dhedya Kakade",
+      "code_13_digit": "0203Pim01BDK1",
+      "claim_number": "193",
+      "gat_number": null,
+      "area": "1.50"
+    },
+    {
+      "serial_number": 16,
+      "claimant_name": "Nurjya Sonya Raut",
+      "code_13_digit": "0203Pim01NSR0",
+      "claim_number": "194",
+      "gat_number": null,
+      "area": "2.64"
+    },
+    {
+      "serial_number": 17,
+      "claimant_name": "Rivlya Lakadya Valvi",
+      "code_13_digit": "0203Pim01RLV0",
+      "claim_number": "195",
+      "gat_number": null,
+      "area": "1.17"
+    },
+    {
+      "serial_number": 18,
+      "claimant_name": "Rodya Babla Desai",
+      "code_13_digit": "0203Pim01RBD0",
+      "claim_number": "196",
+      "gat_number": null,
+      "area": "0.58"
+    },
+    {
+      "serial_number": 19,
+      "claimant_name": "Vichya Lakadya Valvi",
+      "code_13_digit": "0203Pim01VLV0",
+      "claim_number": "197",
+      "gat_number": null,
+      "area": "1.94"
+    },
+    {
+      "serial_number": 20,
+      "claimant_name": "Rajya Bhonya Kuvar",
+      "code_13_digit": "0203Pim01RBK0",
+      "claim_number": "198",
+      "gat_number": null,
+      "area": "2.32"
+    },
+    {
+      "serial_number": 21,
+      "claimant_name": "Raju Barku Chaure",
+      "code_13_digit": "0203Pim01RBC0",
+      "claim_number": "199",
+      "gat_number": null,
+      "area": "Illegible"
+    },
+    {
+      "serial_number": 22,
+      "claimant_name": "Gulbya Motiram Gaikwad",
+      "code_13_digit": "0203Pim01GMG0",
+      "claim_number": "200",
+      "gat_number": null,
+      "area": "Illegible"
+    },
+    {
+      "serial_number": 23,
+      "claimant_name": "Budha Dhedya Kuvar",
+      "code_13_digit": "0203Pim01BDK0",
+      "claim_number": "201",
+      "gat_number": null,
+      "area": "Illegible"
+    },
+    {
+      "serial_number": 24,
+      "claimant_name": "Revya Varsha Desai",
+      "code_13_digit": "0203Pim01RVD0",
+      "claim_number": "202",
+      "gat_number": null,
+      "area": "0.63"
+    },
+    {
+      "serial_number": 25,
+      "claimant_name": "Rajya Hanya Valvi",
+      "code_13_digit": "0203Pim01RHV0",
+      "claim_number": "203",
+      "gat_number": null,
+      "area": "1.42"
+    },
+    {
+      "serial_number": 26,
+      "claimant_name": "Baba Budha Kuvar",
+      "code_13_digit": "0203Pim01BBK0",
+      "claim_number": "204",
+      "gat_number": null,
+      "area": "1.22"
+    },
+    {
+      "serial_number": 27,
+      "claimant_name": "Murlidhar Ramdas Choudhary",
+      "code_13_digit": "0203Pim01MRC0",
+      "claim_number": "205",
+      "gat_number": null,
+      "area": "2.86"
+    },
+    {
+      "serial_number": 28,
+      "claimant_name": "Ganpat Ganya Chaure",
+      "code_13_digit": "0203Pim01GGC0",
+      "claim_number": "206",
+      "gat_number": null,
+      "area": "1.58"
+    },
+    {
+      "serial_number": 29,
+      "claimant_name": "Kubya Vakhadya Pavara",
+      "code_13_digit": "0203Pim01KVP0",
+      "claim_number": "207",
+      "gat_number": "207",
+      "area": "1.47"
+    },
+    {
+      "serial_number": 30,
+      "claimant_name": "Murlidhar Gangaram Pawar",
+      "code_13_digit": "0203Pim01MGP0",
+      "claim_number": "208",
+      "gat_number": null,
+      "area": "1.33"
+    },
+    {
+      "serial_number": 31,
+      "claimant_name": "Lotan Jatrya Desai",
+      "code_13_digit": "0203Pim01LJD0",
+      "claim_number": "209",
+      "gat_number": null,
+      "area": "2.10"
+    },
+    {
+      "serial_number": 32,
+      "claimant_name": "Banda Kharbu Sonawane",
+      "code_13_digit": "0203Pim01BKS0",
+      "claim_number": "210",
+      "gat_number": null,
+      "area": "0.25"
+    },
+    {
+      "serial_number": 33,
+      "claimant_name": "Munya Chila Chaure",
+      "code_13_digit": "0203Pim01MCC0",
+      "claim_number": "211",
+      "gat_number": null,
+      "area": "1.02"
+    },
+    {
+      "serial_number": 34,
+      "claimant_name": "Phulya Valya Raut",
+      "code_13_digit": "0203Pim01FVR0",
+      "claim_number": "212",
+      "gat_number": null,
+      "area": "0.55"
+    },
+    {
+      "serial_number": 35,
+      "claimant_name": "Sukanya Rajya Valvi",
+      "code_13_digit": "0203Pim01SRV0",
+      "claim_number": "213",
+      "gat_number": null,
+      "area": "0.41"
+    }
+  ]
+}

@@ -1,0 +1,625 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Startup India - FRA Claimants Eligibility | FRA Atlas</title>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #2c3e50 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand i {
+            color: #8e44ad;
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #34495e !important;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+        }
+        
+        .nav-link:hover {
+            background: rgba(142, 68, 173, 0.1);
+            color: #8e44ad !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background: rgba(142, 68, 173, 0.15);
+            color: #8e44ad !important;
+        }
+        
+        .main-container {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .yojana-info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .yojana-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+        
+        .eligibility-criteria {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(142, 68, 173, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #8e44ad;
+        }
+        
+        .criteria-item i {
+            color: #8e44ad;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .claimants-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .village-tabs {
+            margin-bottom: 2rem;
+        }
+        
+        .village-tab {
+            background: rgba(142, 68, 173, 0.1);
+            border: 2px solid #8e44ad;
+            color: #8e44ad;
+            padding: 0.75rem 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .village-tab:hover,
+        .village-tab.active {
+            background: #8e44ad;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .claimant-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .claimant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .claimant-card.not-eligible {
+            border-left-color: #e74c3c;
+        }
+        
+        .claimant-card.priority-eligible {
+            border-left-color: #f39c12;
+        }
+        
+        .claimant-card.high-priority {
+            border-left-color: #e74c3c;
+        }
+        
+        .claimant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .claimant-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .eligibility-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .eligibility-badge.eligible {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+        
+        .eligibility-badge.not-eligible {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .eligibility-badge.priority-eligible {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .eligibility-badge.high-priority {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .claimant-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8e44ad;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+        
+        .startup-potential-info {
+            background: rgba(142, 68, 173, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #8e44ad;
+        }
+        
+        .startup-opportunities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .startup-opportunity {
+            background: rgba(142, 68, 173, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #8e44ad;
+            font-weight: 600;
+        }
+        
+        .entrepreneurship-readiness {
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-left: 3px solid #9b59b6;
+            text-align: center;
+        }
+        
+        .readiness-level {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #9b59b6;
+            margin-bottom: 0.25rem;
+        }
+        
+        .age-estimate {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .claimant-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-tree"></i>
+                FRA Atlas
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars text-dark"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="fas fa-upload me-2"></i>Upload Data
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="fas fa-chart-bar me-2"></i>Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-info-circle me-2"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success me-3">
+                        <i class="fas fa-users me-1"></i>
+                        {{ total_claimants }} Claimants
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-rocket me-3"></i>Startup India</h1>
+                <p>FRA Claimants Entrepreneurship Potential Analysis for Startup Ecosystem Development</p>
+            </div>
+
+            <!-- Yojana Information -->
+            <div class="yojana-info-card">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <div class="yojana-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h2 class="mb-3">Startup India Overview</h2>
+                        <p class="mb-3">
+                            Startup India is a flagship initiative to build a strong ecosystem for nurturing innovation 
+                            and startups in India. It aims to drive sustainable economic growth and generate large-scale 
+                            employment opportunities through entrepreneurship development, innovation, and startup culture.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Innovation:</strong> Technology-driven solutions
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Entrepreneurship:</strong> Business development
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Employment:</strong> Job creation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eligibility Criteria -->
+            <div class="eligibility-criteria">
+                <h3 class="mb-4"><i class="fas fa-list-check me-2"></i>Entrepreneurship Potential Criteria for FRA Claimants</h3>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Age Factor:</strong> Young adults (18-45 years) have higher startup potential
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Land Resources:</strong> Landholding can be leveraged for agri-tech startups
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Community Background:</strong> SC/ST communities get priority for startup support
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Gender Inclusion:</strong> Women entrepreneurs get special startup incentives
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Economic Need:</strong> Small landholders have higher motivation for entrepreneurship
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_claimants }}</div>
+                    <div class="stat-label">Total FRA Claimants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ eligible_claimants }}</div>
+                    <div class="stat-label">Startup Potential</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ priority_claimants }}</div>
+                    <div class="stat-label">Priority Category</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ high_priority_claimants }}</div>
+                    <div class="stat-label">High Potential</div>
+                </div>
+            </div>
+
+            <!-- Claimants by Village -->
+            <div class="claimants-section">
+                <h3 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>FRA Claimants by Village</h3>
+                
+                <!-- Village Tabs -->
+                <div class="village-tabs">
+                    {% for village_data in villages_data %}
+                    <a href="#village-{{ forloop.counter0 }}" class="village-tab {% if forloop.first %}active{% endif %}" 
+                       onclick="showVillage({{ forloop.counter0 }})">
+                        {{ village_data.village_name }}
+                        <span class="badge bg-light text-dark ms-2">{{ village_data.claimants|length }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Village Claimants -->
+                {% for village_data in villages_data %}
+                <div id="village-{{ forloop.counter0 }}" class="village-claimants" style="{% if not forloop.first %}display: none;{% endif %}">
+                    <h4 class="mb-3">{{ village_data.village_name }} - {{ village_data.taluka }}, {{ village_data.district }}</h4>
+                    
+                    {% for claimant in village_data.claimants %}
+                    <div class="claimant-card {% if claimant.eligible and claimant.high_priority %}high-priority{% elif claimant.eligible and claimant.priority %}priority-eligible{% elif claimant.eligible %}eligible{% else %}not-eligible{% endif %}">
+                        <div class="claimant-header">
+                            <h5 class="claimant-name">{{ claimant.claimant_name }}</h5>
+                            <span class="eligibility-badge {% if claimant.eligible and claimant.high_priority %}high-priority{% elif claimant.eligible and claimant.priority %}priority-eligible{% elif claimant.eligible %}eligible{% else %}not-eligible{% endif %}">
+                                {% if claimant.eligible and claimant.high_priority %}
+                                    <i class="fas fa-rocket me-1"></i>High Potential
+                                {% elif claimant.eligible and claimant.priority %}
+                                    <i class="fas fa-star me-1"></i>Priority Potential
+                                {% elif claimant.eligible %}
+                                    <i class="fas fa-check-circle me-1"></i>Startup Potential
+                                {% else %}
+                                    <i class="fas fa-times-circle me-1"></i>Limited Potential
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="claimant-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Serial Number</span>
+                                <span class="detail-value">#{{ claimant.serial_number }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">13-Digit Code</span>
+                                <span class="detail-value">{{ claimant.code_13_digit }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Claim Number</span>
+                                <span class="detail-value">{{ claimant.claim_number|default:"N/A" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Gat Number</span>
+                                <span class="detail-value">{{ claimant.gat_number|default:"N/A" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Area (Hectares)</span>
+                                <span class="detail-value">{{ claimant.area }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Estimated Age</span>
+                                <span class="detail-value">{{ claimant.estimated_age }} years</span>
+                            </div>
+                        </div>
+                        {% if claimant.eligible %}
+                        <div class="entrepreneurship-readiness">
+                            <div class="readiness-level">{{ claimant.startup_potential }}</div>
+                            <div style="color: #9b59b6; font-weight: 600;">Entrepreneurship Potential</div>
+                        </div>
+                        <div class="age-estimate">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            Age Group: {{ claimant.age_group }} | Startup Phase: {{ claimant.startup_phase }}
+                        </div>
+                        <div class="startup-potential-info">
+                            <strong><i class="fas fa-lightbulb me-1"></i>Startup Opportunities:</strong>
+                            <ul class="mb-2 mt-2">
+                                <li>Agri-tech and precision farming solutions</li>
+                                <li>Rural e-commerce and digital marketplaces</li>
+                                <li>Forest-based products and sustainable businesses</li>
+                                <li>Renewable energy and green technology</li>
+                                <li>Rural tourism and eco-tourism ventures</li>
+                            </ul>
+                            <div class="startup-opportunities">
+                                <div class="startup-opportunity">Agri-Tech</div>
+                                <div class="startup-opportunity">E-Commerce</div>
+                                <div class="startup-opportunity">Green Tech</div>
+                                <div class="startup-opportunity">Tourism</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showVillage(index) {
+            // Hide all village sections
+            document.querySelectorAll('.village-claimants').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.village-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected village section
+            document.getElementById('village-' + index).style.display = 'block';
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

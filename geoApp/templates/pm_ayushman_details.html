@@ -1,0 +1,587 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>PM Ayushman Bharat - FRA Claimants Eligibility | FRA Atlas</title>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #2c3e50 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand i {
+            color: #27ae60;
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #34495e !important;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+        }
+        
+        .nav-link:hover {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60 !important;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27ae60 !important;
+        }
+        
+        .main-container {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .yojana-info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .yojana-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .eligibility-criteria {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .criteria-item i {
+            color: #e74c3c;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .claimants-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .village-tabs {
+            margin-bottom: 2rem;
+        }
+        
+        .village-tab {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            padding: 0.75rem 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .village-tab:hover,
+        .village-tab.active {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .claimant-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .claimant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .claimant-card.not-eligible {
+            border-left-color: #e74c3c;
+        }
+        
+        .claimant-card.priority-eligible {
+            border-left-color: #f39c12;
+        }
+        
+        .claimant-card.high-priority {
+            border-left-color: #e74c3c;
+        }
+        
+        .claimant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .claimant-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .eligibility-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .eligibility-badge.eligible {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+        
+        .eligibility-badge.not-eligible {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .eligibility-badge.priority-eligible {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+        
+        .eligibility-badge.high-priority {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .claimant-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+        
+        .health-benefits-info {
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .family-coverage {
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .coverage-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .claimant-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-tree"></i>
+                FRA Atlas
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars text-dark"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="fas fa-upload me-2"></i>Upload Data
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="fas fa-chart-bar me-2"></i>Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-info-circle me-2"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success me-3">
+                        <i class="fas fa-users me-1"></i>
+                        {{ total_claimants }} Claimants
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-heartbeat me-3"></i>PM Ayushman Bharat</h1>
+                <p>FRA Claimants Eligibility Analysis for Health Insurance Scheme</p>
+            </div>
+
+            <!-- Yojana Information -->
+            <div class="yojana-info-card">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <div class="yojana-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <h2 class="mb-3">PM Ayushman Bharat Overview</h2>
+                        <p class="mb-3">
+                            The Pradhan Mantri Jan Arogya Yojana (PM-JAY) is the world's largest health insurance scheme 
+                            providing health coverage of ₹5 lakh per family per year for secondary and tertiary care 
+                            hospitalization. It covers over 1,500 medical procedures and treatments across 25,000+ hospitals.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Coverage Amount:</strong> ₹5 lakh per family
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Medical Procedures:</strong> 1,500+ treatments
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Hospitals:</strong> 25,000+ empaneled
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eligibility Criteria -->
+            <div class="eligibility-criteria">
+                <h3 class="mb-4"><i class="fas fa-list-check me-2"></i>Eligibility Criteria for FRA Claimants</h3>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Rural Residence:</strong> Must be residing in rural areas (all FRA claimants qualify)
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Economically Weaker Sections:</strong> Priority for small landholders and vulnerable groups
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>SC/ST Communities:</strong> High priority for Scheduled Castes and Scheduled Tribes
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Women-headed Households:</strong> Special priority for female-headed families
+                    </div>
+                </div>
+                <div class="criteria-item">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong>Family Coverage:</strong> Entire family covered under single policy
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_claimants }}</div>
+                    <div class="stat-label">Total FRA Claimants</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ eligible_claimants }}</div>
+                    <div class="stat-label">Eligible for PM-JAY</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ priority_claimants }}</div>
+                    <div class="stat-label">Priority Category</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ high_priority_claimants }}</div>
+                    <div class="stat-label">High Priority</div>
+                </div>
+            </div>
+
+            <!-- Claimants by Village -->
+            <div class="claimants-section">
+                <h3 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i>FRA Claimants by Village</h3>
+                
+                <!-- Village Tabs -->
+                <div class="village-tabs">
+                    {% for village_data in villages_data %}
+                    <a href="#village-{{ forloop.counter0 }}" class="village-tab {% if forloop.first %}active{% endif %}" 
+                       onclick="showVillage({{ forloop.counter0 }})">
+                        {{ village_data.village_name }}
+                        <span class="badge bg-light text-dark ms-2">{{ village_data.claimants|length }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Village Claimants -->
+                {% for village_data in villages_data %}
+                <div id="village-{{ forloop.counter0 }}" class="village-claimants" style="{% if not forloop.first %}display: none;{% endif %}">
+                    <h4 class="mb-3">{{ village_data.village_name }} - {{ village_data.taluka }}, {{ village_data.district }}</h4>
+                    
+                    {% for claimant in village_data.claimants %}
+                    <div class="claimant-card {% if claimant.eligible and claimant.high_priority %}high-priority{% elif claimant.eligible and claimant.priority %}priority-eligible{% elif claimant.eligible %}eligible{% else %}not-eligible{% endif %}">
+                        <div class="claimant-header">
+                            <h5 class="claimant-name">{{ claimant.claimant_name }}</h5>
+                            <span class="eligibility-badge {% if claimant.eligible and claimant.high_priority %}high-priority{% elif claimant.eligible and claimant.priority %}priority-eligible{% elif claimant.eligible %}eligible{% else %}not-eligible{% endif %}">
+                                {% if claimant.eligible and claimant.high_priority %}
+                                    <i class="fas fa-exclamation-triangle me-1"></i>High Priority
+                                {% elif claimant.eligible and claimant.priority %}
+                                    <i class="fas fa-star me-1"></i>Priority Eligible
+                                {% elif claimant.eligible %}
+                                    <i class="fas fa-check-circle me-1"></i>Eligible
+                                {% else %}
+                                    <i class="fas fa-times-circle me-1"></i>Not Eligible
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="claimant-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Serial Number</span>
+                                <span class="detail-value">#{{ claimant.serial_number }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">13-Digit Code</span>
+                                <span class="detail-value">{{ claimant.code_13_digit }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Claim Number</span>
+                                <span class="detail-value">{{ claimant.claim_number|default:"N/A" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Gat Number</span>
+                                <span class="detail-value">{{ claimant.gat_number|default:"N/A" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Area (Hectares)</span>
+                                <span class="detail-value">{{ claimant.area }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Family Size</span>
+                                <span class="detail-value">{{ claimant.estimated_family_size }} members</span>
+                            </div>
+                        </div>
+                        {% if claimant.eligible %}
+                        <div class="family-coverage">
+                            <div class="coverage-amount">₹5,00,000</div>
+                            <div style="text-align: center; color: #27ae60; font-weight: 600;">Annual Health Coverage</div>
+                        </div>
+                        <div class="health-benefits-info">
+                            <strong><i class="fas fa-info-circle me-1"></i>Health Benefits:</strong>
+                            <ul class="mb-2 mt-2">
+                                <li>Cashless treatment at empaneled hospitals</li>
+                                <li>1,500+ medical procedures covered</li>
+                                <li>Secondary and tertiary care</li>
+                                <li>Pre and post hospitalization expenses</li>
+                                <li>Emergency ambulance services</li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showVillage(index) {
+            // Hide all village sections
+            document.querySelectorAll('.village-claimants').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.village-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected village section
+            document.getElementById('village-' + index).style.display = 'block';
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

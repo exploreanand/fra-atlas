@@ -1,0 +1,979 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="{% static './lib/leaflet-measure.css' %}" />
+    <link rel="stylesheet" href="{% static './lib/MarkerCluster.css' %}">
+    <link rel="stylesheet" href="{% static './lib/MarkerCluster.Default.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href=" {% static './dist/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>FRA Atlas - Forest Rights Analysis</title>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #2c3e50 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-brand i {
+            color: #27ae60;
+            font-size: 1.8rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #34495e !important;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+        }
+        
+        .nav-link:hover {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60 !important;
+            transform: translateY(-2px);
+        }
+        
+        .main-container {
+            padding: 0px;
+            height: calc(100vh - 80px);
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+            border-radius: 0px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .leaflet-popup-content {
+            width: 400px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .leaflet-popup-content h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .map-coordinate {
+            position: absolute;
+            bottom: 10px;
+            left: (100vw);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #2c3e50;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .leaflet-control-layers {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+            padding: 20px !important;
+            font-family: 'Inter', sans-serif;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        
+        .leaflet-control-layers-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .location-filters {
+            margin-top: 15px;
+            padding: 15px;
+            border-top: 2px solid rgba(39, 174, 96, 0.2);
+            border-radius: 12px;
+            background: rgba(39, 174, 96, 0.05);
+            max-width: 100%;
+        }
+        
+        .location-filters select {
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 2px solid rgba(39, 174, 96, 0.2);
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2327ae60' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 32px;
+        }
+        
+        .location-filters select:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+        
+        .location-filters .filter-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .claimant-details {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid rgba(39, 174, 96, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        
+        .claimant-details .detail-item {
+            margin-bottom: 6px;
+            padding: 4px 8px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .claimant-details .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .leaflet-control-zoom a {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #2c3e50 !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .leaflet-control-zoom a:hover {
+            background: #27ae60 !important;
+            color: white !important;
+            transform: scale(1.05);
+        }
+        
+        .custom-controls {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .control-btn:hover {
+            background: #27ae60;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-btn i {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        
+        .control-btn:hover i {
+            color: white;
+        }
+        
+        .leaflet-popup {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .leaflet-popup-tip {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 10px;
+                height: calc(100vh - 80px);
+            }
+            
+            #map {
+                border-radius: 12px;
+            }
+            
+            .custom-controls {
+                right: 15px;
+                top: 15px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            
+            .leaflet-control-layers {
+                max-width: 280px !important;
+            }
+            
+            .map-coordinate {
+                bottom: 5px;
+                left: 5px;
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-tree"></i>
+                FRA Atlas
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars text-dark"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <i class="fas fa-upload me-2"></i>Upload Data
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-bar me-2"></i>Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-info-circle me-2"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success me-3">
+                        <i class="fas fa-users me-1"></i>
+                        35 Claimants
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div id="map">
+            <!-- Map Coordinate Display -->
+            <div class="map-coordinate">
+                <div class="coordinate">Lat: 0.000, Lng: 0.000</div>
+            </div>
+            
+            <!-- Modern Custom Controls -->
+            <div class="custom-controls">
+                <div class="control-btn" onclick="fullScreenView()" title="Toggle Fullscreen">
+                    <i class="fas fa-expand"></i>
+                </div>
+                <div class="control-btn zoom-to-layer" title="Zoom to Home">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="control-btn pin leaflet-prevent" title="Add Note">
+                    <i class="fas fa-map-pin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{% static './lib/leaflet.browser.print.min.js' %}"></script>
+<script src="{% static './lib/leaflet-measure.js' %}"></script>
+<script src="{% static './data/leaflet.markercluster.js' %}"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="{% static './data/test.js' %}"></script>
+<script src="{% static './dist/main.js' %}"></script>
+<script src="{% static './dist/web-GIS.js' %}"></script>
+<script>
+
+// Prevent event propagation for custom controls
+$(".leaflet-prevent").on("click", L.DomEvent.stopPropagation);
+
+// Pin toggle functionality
+var mapPinToggler = true;
+$('.pin').on('click', function(){
+    if(mapPinToggler){
+    map.on('click', function(e){
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+        var popup = `<form action="{% url 'note' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="note heading">Note heading</label>
+          <input type="text" name='note_heading' class="form-control" placeholder="Enter note heading">
+        </div>
+
+        <input type="hidden" name="lat" value="${lat}">
+        <input type="hidden" name="lng" value ="${lng}">
+
+        <div class="form-group">
+          <label for="note">Note</label>
+          <textarea class='form-control' name="note_des" >Enter note here</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>`;
+        var marker = L.marker([e.latlng.lat, e.latlng.lng]).bindPopup(popup);
+        marker.addTo(map)
+    })
+    mapPinToggler = !mapPinToggler;
+}else {
+    map.off('click')
+}
+})
+// Notes functionality - will be added when notes exist
+     var markerGroup = new L.featureGroup()
+     {% for n in note %}
+         var lat = {{n.lat}}
+         var lng = {{n.lng}}
+         var marker = L.marker([lat, lng]).bindPopup(`<h3>{{n.note_heading}}</h3><p>{{n.note}}</p>`)
+         marker.addTo(markerGroup)
+     {% endfor %}
+
+     // Add notes to overlayMaps only if there are notes
+     {% if note %}
+         overlayMaps['📝 Notes'] = markerGroup;
+     {% endif %}
+
+
+     // Create shapefile layers but don't add them to overlayMaps (users can select via dropdown)
+    {% for s in shp %}
+    var {{ s.name }} = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+        layers: 'geoapp:{{ s.name }}',
+        transparent: true,
+        format: 'image/png',
+    });
+    
+    // Layer is created but not added to overlayMaps checkboxes
+    // Users can select these layers through the dropdown filters instead
+    
+    {% endfor %}
+
+    // Claimants data for highlighting
+    var claimantsData = null;
+    var highlightedSerialNumbers = [];
+    var availableVillages = [];
+    var currentSelectedVillage = 'Pimpalgaon Khu';
+
+    // Fetch available villages from API
+    function fetchAvailableVillages() {
+        fetch('/api/villages/')
+            .then(response => response.json())
+            .then(data => {
+                availableVillages = data.villages;
+                console.log('Loaded available villages:', availableVillages.length + ' villages');
+                updateLocationDataFromAPI();
+            })
+            .catch(error => {
+                console.error('Error fetching villages data:', error);
+            });
+    }
+
+    // Update location data structure from API data
+    function updateLocationDataFromAPI() {
+        var newLocationData = {};
+        var newLocationCoordinates = {};
+        
+        availableVillages.forEach(function(village) {
+            var state = village.district ? 'Maharashtra' : 'Maharashtra'; // Default state
+            var district = village.district || 'Unknown District';
+            var taluka = village.taluka || 'Unknown Taluka';
+            var villageName = village.village_name;
+            
+            // Build nested structure
+            if (!newLocationData[state]) {
+                newLocationData[state] = {};
+                newLocationCoordinates[state] = {
+                    center: [19.7515, 75.7139],
+                    zoom: 7
+                };
+            }
+            if (!newLocationData[state][district]) {
+                newLocationData[state][district] = {};
+                newLocationCoordinates[state + '.' + district] = {
+                    center: [20.9042, 74.7749],
+                    zoom: 9
+                };
+            }
+            if (!newLocationData[state][district][taluka]) {
+                newLocationData[state][district][taluka] = [];
+                newLocationCoordinates[state + '.' + district + '.' + taluka] = {
+                    center: [20.893232, 73.946012],
+                    zoom: 11
+                };
+            }
+            
+            newLocationData[state][district][taluka].push(villageName);
+            newLocationCoordinates[state + '.' + district + '.' + taluka + '.' + villageName] = {
+                center: [20.893232, 73.946012],
+                zoom: 15
+            };
+        });
+        
+        // Update global variables
+        locationData = newLocationData;
+        Object.assign(locationCoordinates, newLocationCoordinates);
+        
+        console.log('Updated location data with API villages');
+    }
+
+    // Fetch claimants data
+    function fetchClaimantsData(village = 'Pimpalgaon Khu') {
+        currentSelectedVillage = village;
+        fetch('/api/claimants/?village=' + encodeURIComponent(village))
+            .then(response => response.json())
+            .then(data => {
+                claimantsData = data;
+                highlightedSerialNumbers = data.serial_numbers;
+                console.log('Loaded claimants data for ' + data.village_name + ':', data.claimants.length + ' claimants');
+                
+                // Populate serial number dropdown with retry mechanism
+                setTimeout(function() {
+                    populateSerialNumberDropdown();
+                }, 500);
+                
+                // Update WMS layers with highlighting
+                updateHighlighting();
+            })
+            .catch(error => {
+                console.error('Error fetching claimants data:', error);
+            });
+    }
+
+     // Populate the serial number dropdown with claimants data
+     function populateSerialNumberDropdown() {
+         console.log('Attempting to populate serial number dropdown...');
+         
+         var serialSelect = document.getElementById('serialNumberSelect');
+         console.log('Serial select element:', serialSelect);
+         
+         if (!serialSelect) {
+             console.error('Serial number select element not found!');
+             return;
+         }
+         
+         if (!claimantsData) {
+             console.error('No claimants data available!');
+             return;
+         }
+         
+         if (!claimantsData.claimants || claimantsData.claimants.length === 0) {
+             console.error('No claimants in data!');
+             return;
+         }
+
+         // Clear existing options and show ready state
+         serialSelect.innerHTML = '<option value="">👤 Select Claimant</option>';
+
+         // Add serial numbers to dropdown with better formatting
+         claimantsData.claimants.forEach(function(claimant) {
+             var option = document.createElement('option');
+             option.value = claimant.serial_number;
+             option.textContent = `#${claimant.serial_number} - ${claimant.claimant_name}`;
+             serialSelect.appendChild(option);
+         });
+         
+         console.log('Successfully populated dropdown with', claimantsData.claimants.length, 'claimants');
+     }
+
+     // Function to update highlighting based on claimants data
+     function updateHighlighting() {
+         if (!claimantsData || highlightedSerialNumbers.length === 0) {
+             console.log('No claimants data or serial numbers to highlight');
+             return;
+         }
+
+         console.log('Attempting to highlight features for village:', currentSelectedVillage, 'with patta_id:', highlightedSerialNumbers);
+
+         // Find layers that might contain patta_id and add highlighted version (not in checkboxes)
+         {% for s in shp %}
+         var layerName = '{{ s.name }}';
+         console.log('Checking layer:', layerName);
+         
+         // Check if this layer should be highlighted (contains village names or patta_id attribute)
+         if (layerName.toLowerCase().includes('pimpalgaon') || 
+             layerName.toLowerCase().includes('kadupada') ||
+             layerName.toLowerCase().includes('patta') ||
+             layerName.toLowerCase().includes('dhule')) {
+             
+             console.log('Creating highlighted layer for:', layerName);
+             
+             // Create village-specific CQL filter with both vill_name and patta_id
+             var villageName = currentSelectedVillage.toLowerCase();
+             if (villageName === 'pimpalgaon khu') {
+                 villageName = 'pimpalgaon'; // Match your shapefile attribute value
+             }
+             var cqlFilter = "vill_name = '" + villageName + "' AND patta_id IN (" + highlightedSerialNumbers.join(',') + ")";
+             
+             console.log('CQL Filter:', cqlFilter);
+             
+             // Create a highlighted version of the layer with CQL filter
+             var highlightedLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+                 layers: 'geoapp:' + layerName,
+                 transparent: true,
+                 format: 'image/png',
+                 styles: 'geoapp:geoApp_shp_highlighted',
+                 cql_filter: cqlFilter,
+                 attribution: 'Highlighted Features',
+                 version: '1.1.1'
+             });
+             
+             // Add the main highlighted layer to map (but not to overlayMaps checkboxes)
+             highlightedLayer.addTo(map);
+             
+             console.log('Added highlighted layer for:', layerName);
+             
+             // Also create a WFS layer for better interaction (optional)
+             highlightedLayer.on('loading', function() {
+                 console.log('Loading highlighted features...');
+             });
+             
+             highlightedLayer.on('load', function() {
+                 console.log('Highlighted features loaded successfully');
+             });
+             
+             highlightedLayer.on('tileerror', function(error) {
+                 console.error('Error loading highlighted tiles:', error);
+             });
+         }
+         {% endfor %}
+     }
+
+     // Claimants data will be loaded after layer control is created
+
+    // TIFF/Raster layers
+    {% for t in tiff %}
+    var {{ t.name }} = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+        layers: '{{t.name}}',
+        transparent: true,
+        format: 'image/png',
+    })
+
+    // Add TIFF layer with user-friendly name
+    var tiffDisplayName = '🗺️ ' + '{{ t.name }}'.charAt(0).toUpperCase() + '{{ t.name }}'.slice(1);
+    overlayMaps[tiffDisplayName] = {{ t.name }};
+
+    {% endfor %}
+
+     // Create custom layer control with location filters
+     var layerControl = L.control.layers(baseMaps, overlayMaps, { collapsed: false, position: 'topleft' }).addTo(map);
+     
+     // Add location filters to the layer control
+     setTimeout(function() {
+         var controlContainer = document.querySelector('.leaflet-control-layers-list');
+         if (controlContainer) {
+             var locationFiltersDiv = document.createElement('div');
+             locationFiltersDiv.className = 'location-filters';
+             locationFiltersDiv.innerHTML = `
+                 <div class="filter-title">
+                     <i class="fas fa-map-marker-alt"></i>
+                     Location Filter
+                 </div>
+                 <select id="stateSelect" onchange="updateDistricts()">
+                     <option value="">🏛️ All States</option>
+                     <option value="Maharashtra">🏛️ Maharashtra</option>
+                 </select>
+                 <select id="districtSelect" onchange="updateTalukas()" disabled>
+                     <option value="">🏘️ All Districts</option>
+                 </select>
+                 <select id="talukaSelect" onchange="updateVillages()" disabled>
+                     <option value="">🏡 All Talukas</option>
+                 </select>
+                 <select id="villageSelect" onchange="applyLocationFilter()" disabled>
+                     <option value="">🏠 All Villages</option>
+                 </select>
+                 <div class="filter-title" style="margin-top: 15px;">
+                     <i class="fas fa-user-friends"></i>
+                     Forest Rights Claimants
+                 </div>
+                 <select id="serialNumberSelect" onchange="showClaimantDetails()">
+                     <option value="">⏳ Loading claimants...</option>
+                 </select>
+                 <div id="claimantDetails" class="claimant-details" style="display: none;">
+                     <div id="claimantInfo"></div>
+                 </div>
+             `;
+             controlContainer.appendChild(locationFiltersDiv);
+             
+            // Now that the elements are added, load villages and claimants data
+            console.log('Layer control elements added, loading villages and claimants data...');
+            fetchAvailableVillages();
+            fetchClaimantsData();
+         }
+     }, 100);
+
+     // Location data structure with coordinates - make it dynamic for easy updates
+     var locationData = {
+         "Maharashtra": {
+             "Dhule": {
+                 "Sakri": ["Pimpalgaon khu"]
+             }
+         }
+     };
+
+     // Location coordinates for zooming
+     var locationCoordinates = {
+         "Maharashtra": {
+             center: [19.7515, 75.7139],
+             zoom: 7
+         },
+         "Maharashtra.Dhule": {
+             center: [20.9042, 74.7749],
+             zoom: 9
+         },
+         "Maharashtra.Dhule.Sakri": {
+             center: [20.893232, 73.946012],
+             zoom: 11
+         },
+         "Maharashtra.Dhule.Sakri.Pimpalgaon khu": {
+             center: [20.893232, 73.946012],
+             zoom: 15
+         }
+     };
+
+     // Location filter functions
+
+     function updateDistricts() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+
+         // Clear and disable subsequent dropdowns
+         districtSelect.innerHTML = '<option value="">All Districts</option>';
+         talukaSelect.innerHTML = '<option value="">All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">All Villages</option>';
+         talukaSelect.disabled = true;
+         villageSelect.disabled = true;
+
+         if (stateSelect.value && locationData[stateSelect.value]) {
+             var districts = Object.keys(locationData[stateSelect.value]);
+             districts.forEach(function(district) {
+                 var option = document.createElement('option');
+                 option.value = district;
+                 option.textContent = district;
+                 districtSelect.appendChild(option);
+             });
+             districtSelect.disabled = false;
+             
+             // Zoom to state
+             var stateKey = stateSelect.value;
+             if (locationCoordinates[stateKey]) {
+                 map.setView(locationCoordinates[stateKey].center, locationCoordinates[stateKey].zoom);
+             }
+         } else {
+             districtSelect.disabled = true;
+         }
+     }
+
+     function updateTalukas() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+
+         // Clear and disable subsequent dropdowns
+         talukaSelect.innerHTML = '<option value="">All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">All Villages</option>';
+         villageSelect.disabled = true;
+
+         if (stateSelect.value && districtSelect.value && locationData[stateSelect.value][districtSelect.value]) {
+             var talukas = Object.keys(locationData[stateSelect.value][districtSelect.value]);
+             talukas.forEach(function(taluka) {
+                 var option = document.createElement('option');
+                 option.value = taluka;
+                 option.textContent = taluka;
+                 talukaSelect.appendChild(option);
+             });
+             talukaSelect.disabled = false;
+             
+             // Zoom to district
+             var districtKey = stateSelect.value + '.' + districtSelect.value;
+             if (locationCoordinates[districtKey]) {
+                 map.setView(locationCoordinates[districtKey].center, locationCoordinates[districtKey].zoom);
+             }
+         } else {
+             talukaSelect.disabled = true;
+         }
+     }
+
+     function updateVillages() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+
+         // Clear village dropdown
+         villageSelect.innerHTML = '<option value="">All Villages</option>';
+
+         if (stateSelect.value && districtSelect.value && talukaSelect.value && 
+             locationData[stateSelect.value][districtSelect.value][talukaSelect.value]) {
+             var villages = locationData[stateSelect.value][districtSelect.value][talukaSelect.value];
+             villages.forEach(function(village) {
+                 var option = document.createElement('option');
+                 option.value = village;
+                 option.textContent = village;
+                 villageSelect.appendChild(option);
+             });
+             villageSelect.disabled = false;
+             
+             // Zoom to taluka
+             var talukaKey = stateSelect.value + '.' + districtSelect.value + '.' + talukaSelect.value;
+             if (locationCoordinates[talukaKey]) {
+                 map.setView(locationCoordinates[talukaKey].center, locationCoordinates[talukaKey].zoom);
+             }
+         } else {
+             villageSelect.disabled = true;
+         }
+     }
+
+    function applyLocationFilter() {
+        var state = document.getElementById('stateSelect').value;
+        var district = document.getElementById('districtSelect').value;
+        var taluka = document.getElementById('talukaSelect').value;
+        var village = document.getElementById('villageSelect').value;
+
+        // Zoom to village if selected
+        if (state && district && taluka && village) {
+            var villageKey = state + '.' + district + '.' + taluka + '.' + village;
+            if (locationCoordinates[villageKey]) {
+                map.setView(locationCoordinates[villageKey].center, locationCoordinates[villageKey].zoom);
+            }
+        }
+
+        // If a village is selected, fetch its claimants data
+        if (village && village !== currentSelectedVillage) {
+            console.log('Loading claimants data for village:', village);
+            fetchClaimantsData(village);
+        }
+
+        // Build filter criteria for display
+        var filterCriteria = [];
+        if (state) filterCriteria.push('State: ' + state);
+        if (district) filterCriteria.push('District: ' + district);
+        if (taluka) filterCriteria.push('Taluka: ' + taluka);
+        if (village) filterCriteria.push('Village: ' + village);
+
+        if (filterCriteria.length > 0) {
+            console.log('Location filter applied:', filterCriteria.join(', '));
+            // Here you can add logic to filter layers based on the selected location
+            // For example, show/hide specific layers based on administrative boundaries
+        }
+    }
+
+     // Show claimant details when serial number is selected
+     function showClaimantDetails() {
+         var serialSelect = document.getElementById('serialNumberSelect');
+         var detailsDiv = document.getElementById('claimantDetails');
+         var infoDiv = document.getElementById('claimantInfo');
+         
+         if (!serialSelect || !detailsDiv || !infoDiv || !claimantsData) return;
+         
+         var selectedSerial = parseInt(serialSelect.value);
+         
+         if (!selectedSerial) {
+             detailsDiv.style.display = 'none';
+             return;
+         }
+         
+         // Find the claimant with the selected serial number
+         var claimant = claimantsData.claimants.find(function(c) {
+             return c.serial_number === selectedSerial;
+         });
+         
+         if (claimant) {
+             // Format the claimant details with modern styling
+             var detailsHTML = `
+                 <div class="detail-item">
+                     <div class="detail-label">🔢 Serial Number:</div>
+                     <div>${claimant.serial_number}</div>
+                 </div>
+                 <div class="detail-item">
+                     <div class="detail-label">👤 Claimant Name:</div>
+                     <div>${claimant.claimant_name}</div>
+                 </div>
+                 <div class="detail-item">
+                     <div class="detail-label">🏷️ 13-Digit Code:</div>
+                     <div>${claimant.code_13_digit}</div>
+                 </div>
+                 <div class="detail-item">
+                     <div class="detail-label">📄 Claim Number:</div>
+                     <div>${claimant.claim_number || 'N/A'}</div>
+                 </div>
+                 <div class="detail-item">
+                     <div class="detail-label">🏠 Gat Number:</div>
+                     <div>${claimant.gat_number || 'N/A'}</div>
+                 </div>
+                 <div class="detail-item">
+                     <div class="detail-label">📐 Area (Hectares):</div>
+                     <div>${claimant.area}</div>
+                 </div>
+             `;
+             
+             infoDiv.innerHTML = detailsHTML;
+             detailsDiv.style.display = 'block';
+             
+             // Highlight only this specific feature on the map
+             highlightSpecificFeature(selectedSerial);
+         } else {
+             detailsDiv.style.display = 'none';
+         }
+     }
+
+     // Highlight a specific feature by serial number
+     function highlightSpecificFeature(serialNumber) {
+         if (!serialNumber) return;
+         
+         console.log('Highlighting specific feature with patta_id:', serialNumber);
+         
+         // Remove existing specific highlight layer
+         map.eachLayer(function(layer) {
+             if (layer.options && layer.options.attribution === 'Specific Highlight') {
+                 map.removeLayer(layer);
+             }
+         });
+         
+         // Find layers that might contain patta_id and add specific highlighted version (not in checkboxes)
+         {% for s in shp %}
+         var layerName = '{{ s.name }}';
+         
+         if (layerName.toLowerCase().includes('pimpalgaon') || 
+             layerName.toLowerCase().includes('kadupada') ||
+             layerName.toLowerCase().includes('patta') ||
+             layerName.toLowerCase().includes('dhule')) {
+             
+             // Create village-specific CQL filter for single feature
+             var villageName = currentSelectedVillage.toLowerCase();
+             if (villageName === 'pimpalgaon khu') {
+                 villageName = 'pimpalgaon'; // Match your shapefile attribute value
+             }
+             var specificCqlFilter = "vill_name = '" + villageName + "' AND patta_id = " + serialNumber;
+             console.log('Specific CQL Filter:', specificCqlFilter);
+             
+             // Create a specific highlighted layer with CQL filter for single feature
+             var specificHighlightLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+                 layers: 'geoapp:' + layerName,
+                 transparent: true,
+                 format: 'image/png',
+                 styles: 'geoapp:geoApp_shp_highlighted',
+                 cql_filter: specificCqlFilter,
+                 attribution: 'Specific Highlight',
+                 version: '1.1.1'
+             });
+             
+             specificHighlightLayer.addTo(map);
+             
+             console.log('Added specific highlight for patta_id:', serialNumber);
+         }
+         {% endfor %}
+     }
+
+</script>

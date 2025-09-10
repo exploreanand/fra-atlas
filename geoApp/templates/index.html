@@ -130,29 +130,30 @@
         }
         
         .location-filters {
-            margin-top: 15px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 8px;
             border-top: 2px solid rgba(39, 174, 96, 0.2);
-            border-radius: 12px;
+            border-radius: 6px;
             background: rgba(39, 174, 96, 0.05);
-            max-width: 100%;
+            max-width: 180px;
+            min-width: 160px;
         }
         
         .location-filters select {
             width: 100%;
-            margin-bottom: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            border: 2px solid rgba(39, 174, 96, 0.2);
-            border-radius: 8px;
+            margin-bottom: 5px;
+            padding: 5px 8px;
+            font-size: 11px;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 4px;
             background: white;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2327ae60' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 16px;
+            background-position: right 6px center;
+            background-size: 12px;
             padding-right: 32px;
         }
         
@@ -165,28 +166,30 @@
         .location-filters .filter-title {
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 5px;
+            font-size: 11px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
         
         .claimant-details {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border: 2px solid rgba(39, 174, 96, 0.2);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 8px;
-            font-size: 11px;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 10px;
+            max-width: 160px;
         }
         
         .claimant-details .detail-item {
-            margin-bottom: 6px;
-            padding: 4px 8px;
+            margin-bottom: 4px;
+            padding: 3px 6px;
             background: white;
-            border-radius: 6px;
-            border-left: 3px solid #27ae60;
+            border-radius: 4px;
+            border-left: 2px solid #27ae60;
+            font-size: 9px;
         }
         
         .claimant-details .detail-label {
@@ -336,7 +339,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{% url 'analytics' %}">
                             <i class="fas fa-chart-bar me-2"></i>Analytics
                         </a>
                     </li>
@@ -461,7 +464,86 @@ $('.pin').on('click', function(){
     var claimantsData = null;
     var highlightedSerialNumbers = [];
     var availableVillages = [];
-    var currentSelectedVillage = 'Pimpalgaon Khu';
+    var currentSelectedVillage = null;
+    
+    // ===== SCALABLE VILLAGE CONFIGURATION SYSTEM =====
+    // This system automatically handles any number of villages
+    var villageConfig = {
+        'Kadupada': {
+            coordinates: [21.0096, 73.9448],
+            shapefileName: 'kadupada',
+            zoom: 15
+        },
+        'Pimpalgaon Khu': {
+            coordinates: [20.893232, 73.946012],
+            shapefileName: 'pimpalgaon',
+            zoom: 15
+        },
+        'Jambhore': {
+            coordinates: [21.1033, 74.1965],
+            shapefileName: 'jambhore',
+            zoom: 16
+        },
+        'Mohagoan': {
+            coordinates: [20.8628, 73.9407],
+            shapefileName: 'mohagoan',
+            zoom: 15
+        },
+        
+        // New villages can be added here, or loaded dynamically from API
+    };
+    
+    // Default configuration for unknown villages
+    var defaultVillageConfig = {
+        coordinates: [20.9, 73.9], // Default Dhule region center
+        shapefileName: null, // Will use village name lowercase
+        zoom: 15
+    };
+    
+    // ===== DYNAMIC HELPER FUNCTIONS =====
+    
+    // Get village configuration (scalable for any village)
+    function getVillageConfig(villageName) {
+        return villageConfig[villageName] || {
+            coordinates: defaultVillageConfig.coordinates,
+            shapefileName: defaultVillageConfig.shapefileName || villageName.toLowerCase().replace(/\s+/g, ''),
+            zoom: defaultVillageConfig.zoom
+        };
+    }
+    
+    // Get shapefile name for village (handles special cases)
+    function getShapefileVillageName(villageName) {
+        var config = getVillageConfig(villageName);
+        return config.shapefileName;
+    }
+    
+    // Get coordinates for village
+    function getVillageCoordinates(villageName) {
+        var config = getVillageConfig(villageName);
+        return {
+            center: config.coordinates,
+            zoom: config.zoom
+        };
+    }
+    
+    // Check if layer should be highlighted for current village
+    function shouldHighlightLayer(layerName, villageName) {
+        if (!villageName) return false;
+        
+        // Check if layer contains current village name (split by spaces for multi-word villages)
+        var villageKeywords = villageName.toLowerCase().split(' ');
+        var villageMatch = villageKeywords.some(keyword => 
+            layerName.toLowerCase().includes(keyword.replace(/[^a-z0-9]/g, ''))
+        );
+        
+        // Also check for generic indicators
+        var genericMatch = layerName.toLowerCase().includes('patta') ||
+                          layerName.toLowerCase().includes('dhule') ||
+                          layerName.toLowerCase().includes('forest') ||
+                          layerName.toLowerCase().includes('claimant');
+        
+        return villageMatch || genericMatch;
+    }
 
     // Fetch available villages from API
     function fetchAvailableVillages() {
@@ -512,9 +594,12 @@ $('.pin').on('click', function(){
             }
             
             newLocationData[state][district][taluka].push(villageName);
+            
+            // Dynamic village coordinates using scalable config system
+            var coords = getVillageCoordinates(villageName);
             newLocationCoordinates[state + '.' + district + '.' + taluka + '.' + villageName] = {
-                center: [20.893232, 73.946012],
-                zoom: 15
+                center: coords.center,
+                zoom: coords.zoom
             };
         });
         
@@ -526,7 +611,11 @@ $('.pin').on('click', function(){
     }
 
     // Fetch claimants data
-    function fetchClaimantsData(village = 'Pimpalgaon Khu') {
+    function fetchClaimantsData(village) {
+        if (!village) {
+            console.log('No village specified for fetchClaimantsData');
+            return;
+        }
         currentSelectedVillage = village;
         fetch('/api/claimants/?village=' + encodeURIComponent(village))
             .then(response => response.json())
@@ -534,6 +623,9 @@ $('.pin').on('click', function(){
                 claimantsData = data;
                 highlightedSerialNumbers = data.serial_numbers;
                 console.log('Loaded claimants data for ' + data.village_name + ':', data.claimants.length + ' claimants');
+                
+                // Zoom to the selected village
+                zoomToVillage(village);
                 
                 // Populate serial number dropdown with retry mechanism
                 setTimeout(function() {
@@ -546,6 +638,20 @@ $('.pin').on('click', function(){
             .catch(error => {
                 console.error('Error fetching claimants data:', error);
             });
+    }
+
+    // Function to zoom to a specific village (now fully scalable)
+    function zoomToVillage(villageName) {
+        var coords = getVillageCoordinates(villageName);
+        
+        map.setView(coords.center, coords.zoom);
+        console.log('Zoomed to', villageName, 'at coordinates:', coords.center, 'zoom:', coords.zoom);
+        
+        // Log if using default coordinates
+        var config = getVillageConfig(villageName);
+        if (!villageConfig[villageName]) {
+            console.log('Using default coordinates for', villageName, '- add to villageConfig for custom coordinates');
+        }
     }
 
      // Populate the serial number dropdown with claimants data
@@ -586,25 +692,41 @@ $('.pin').on('click', function(){
 
      // Function to update highlighting based on claimants data
      function updateHighlighting() {
+         // Don't highlight anything if no village is selected
+         if (!currentSelectedVillage) {
+             console.log('No village selected - skipping highlighting');
+             return;
+         }
+         
          if (!claimantsData || highlightedSerialNumbers.length === 0) {
              console.log('No claimants data or serial numbers to highlight');
              return;
          }
 
-         console.log('Attempting to highlight features with patta_id:', highlightedSerialNumbers);
+         console.log('Attempting to highlight features for village:', currentSelectedVillage, 'with patta_id:', highlightedSerialNumbers);
 
          // Find layers that might contain patta_id and add highlighted version (not in checkboxes)
          {% for s in shp %}
          var layerName = '{{ s.name }}';
          console.log('Checking layer:', layerName);
          
-         // Check if this layer should be highlighted (contains pimpalgaon or has patta_id attribute)
-         if (layerName.toLowerCase().includes('pimpalgaon') || 
-             layerName.toLowerCase().includes('patta') ||
-             layerName.toLowerCase().includes('dhule')) {
+         // Dynamic layer detection - works with any village
+         if (shouldHighlightLayer(layerName, currentSelectedVillage)) {
              
              console.log('Creating highlighted layer for:', layerName);
-             console.log('CQL Filter:', 'patta_id IN (' + highlightedSerialNumbers.join(',') + ')');
+             
+             // Create village-specific CQL filter with both vill_name and patta_id
+             var villageName = currentSelectedVillage;
+
+             // Dynamic village name mapping using scalable config system
+             var shapefileVillageName = getShapefileVillageName(villageName);
+
+             var cqlFilter = "vill_name = '" + shapefileVillageName + "' AND patta_id IN (" + highlightedSerialNumbers.join(',') + ")";
+             
+             // Debug logging
+             console.log('Village mapping:', villageName, '->', shapefileVillageName);
+             console.log('Serial numbers for', villageName + ':', highlightedSerialNumbers);
+             console.log('Final CQL Filter:', cqlFilter);
              
              // Create a highlighted version of the layer with CQL filter
              var highlightedLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
@@ -612,7 +734,7 @@ $('.pin').on('click', function(){
                  transparent: true,
                  format: 'image/png',
                  styles: 'geoapp:geoApp_shp_highlighted',
-                 cql_filter: 'patta_id IN (' + highlightedSerialNumbers.join(',') + ')',
+                 cql_filter: cqlFilter,
                  attribution: 'Highlighted Features',
                  version: '1.1.1'
              });
@@ -686,7 +808,7 @@ $('.pin').on('click', function(){
                      Forest Rights Claimants
                  </div>
                  <select id="serialNumberSelect" onchange="showClaimantDetails()">
-                     <option value="">⏳ Loading claimants...</option>
+                     <option value="">👤 Select village first...</option>
                  </select>
                  <div id="claimantDetails" class="claimant-details" style="display: none;">
                      <div id="claimantInfo"></div>
@@ -694,10 +816,11 @@ $('.pin').on('click', function(){
              `;
              controlContainer.appendChild(locationFiltersDiv);
              
-            // Now that the elements are added, load villages and claimants data
-            console.log('Layer control elements added, loading villages and claimants data...');
+            // Now that the elements are added, load available villages
+            console.log('Layer control elements added, loading available villages...');
             fetchAvailableVillages();
-            fetchClaimantsData();
+            // Don't auto-load any village data - wait for user selection
+            console.log('Village dropdown ready. Select a village to load claimants data.');
          }
      }, 100);
 
@@ -724,8 +847,16 @@ $('.pin').on('click', function(){
              center: [20.893232, 73.946012],
              zoom: 11
          },
-         "Maharashtra.Dhule.Sakri.Pimpalgaon khu": {
+         "Maharashtra.Dhule.Sakri.Pimpalgaon Khu": {
              center: [20.893232, 73.946012],
+             zoom: 15
+         },
+         "Maharashtra.Dhule.Sakri.Kadupada": {
+             center: [21.0143, 73.9183],
+             zoom: 15
+         },
+         "Maharashtra.Dhule.Sakri.Jambhore": {
+             center: [21.1033, 74.1965],
              zoom: 15
          }
      };
@@ -919,11 +1050,11 @@ $('.pin').on('click', function(){
          }
      }
 
-     // Highlight a specific feature by serial number
+     // Highlight a specific feature by serial number in BLUE
      function highlightSpecificFeature(serialNumber) {
          if (!serialNumber) return;
          
-         console.log('Highlighting specific feature with patta_id:', serialNumber);
+         console.log('Highlighting specific feature in BLUE with patta_id:', serialNumber);
          
          // Remove existing specific highlight layer
          map.eachLayer(function(layer) {
@@ -936,24 +1067,57 @@ $('.pin').on('click', function(){
          {% for s in shp %}
          var layerName = '{{ s.name }}';
          
-         if (layerName.toLowerCase().includes('pimpalgaon') || 
-             layerName.toLowerCase().includes('patta') ||
-             layerName.toLowerCase().includes('dhule')) {
+         if (shouldHighlightLayer(layerName, currentSelectedVillage)) {
              
-             // Create a specific highlighted layer with CQL filter for single feature
+             // Create village-specific CQL filter for single feature
+             var villageName = currentSelectedVillage;
+
+             // Dynamic village name mapping using scalable config system
+             var shapefileVillageName = getShapefileVillageName(villageName);
+
+             var specificCqlFilter = "vill_name = '" + shapefileVillageName + "' AND patta_id = " + serialNumber;
+             
+             // Debug logging for specific feature
+             console.log('Specific village mapping:', villageName, '->', shapefileVillageName);
+             console.log('Specific CQL Filter:', specificCqlFilter);
+             
+             // Create a specific highlighted layer with BLUE styling for single feature
              var specificHighlightLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
                  layers: 'geoapp:' + layerName,
                  transparent: true,
                  format: 'image/png',
-                 styles: 'geoapp:geoApp_shp_highlighted',
-                 cql_filter: 'patta_id = ' + serialNumber,
+                 styles: '', // Use inline SLD for blue styling
+                 cql_filter: specificCqlFilter,
                  attribution: 'Specific Highlight',
-                 version: '1.1.1'
+                 version: '1.1.1',
+                 // Add inline SLD for blue highlighting
+                 sld_body: `<?xml version="1.0" encoding="UTF-8"?>
+<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld">
+  <NamedLayer>
+    <Name>blue_highlight</Name>
+    <UserStyle>
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#0066FF</CssParameter>
+              <CssParameter name="fill-opacity">0.8</CssParameter>
+            </Fill>
+            <Stroke>
+              <CssParameter name="stroke">#0044CC</CssParameter>
+              <CssParameter name="stroke-width">3</CssParameter>
+            </Stroke>
+          </PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+    </UserStyle>
+  </NamedLayer>
+</StyledLayerDescriptor>`
              });
              
              specificHighlightLayer.addTo(map);
              
-             console.log('Added specific highlight for patta_id:', serialNumber);
+             console.log('Added BLUE specific highlight for patta_id:', serialNumber, 'in village:', villageName);
          }
          {% endfor %}
      }

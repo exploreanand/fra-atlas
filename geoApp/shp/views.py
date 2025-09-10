@@ -1,56 +1,69 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Shp, Claimant
-from tiff.models import Tiff
-from note.models import Note
+import json
+import os
+from django.conf import settings
 
-# Create your views here.
 def index(request):
-    shp = Shp.objects.all()
-    tiff = Tiff.objects.all()
-    return render(request, 'index.html', {'shp': shp, 'tiff': tiff, 'note': note})
-
-def note(request):
-    if(request.method == 'POST'):
-        note_heading = request.POST.get('note-heading')
-        note = request.POST.get('note')
-        lat = request.POST.get('lat')
-        lng = request.POST.get('lng')
-        print(note_heading, note, lat, lng, 'email username')
-        return render(request, 'index.html')
-    return render(request, 'index.html')
+    """Main dashboard view with map and claimant data"""
+    # Load note data for the map
+    from note.models import Note
+    notes = Note.objects.all()
+    
+    context = {
+        'note': notes
+    }
+    return render(request, 'index.html', context)
 
 def get_claimants_data(request):
-    """Return claimants data for highlighting features"""
-    village = request.GET.get('village', 'Pimpalgaon Khu')
-    claimants = Claimant.objects.filter(village_name=village)
+    """API endpoint to get claimants data for a specific village"""
+    village_name = request.GET.get('village')
     
-    data = {
-        'village_name': village,
-        'serial_numbers': list(claimants.values_list('serial_number', flat=True)),
-        'claimants': list(claimants.values(
-            'serial_number', 'claimant_name', 'code_13_digit', 
-            'claim_number', 'gat_number', 'area'
-        ))
-    }
-    return JsonResponse(data)
+    if not village_name:
+        return JsonResponse({'error': 'Village name is required'}, status=400)
+    
+    # Load village data from JSON file
+    villages_dir = os.path.join(settings.BASE_DIR, 'data', 'villages')
+    file_path = os.path.join(villages_dir, f'{village_name.lower().replace(" ", "_")}.json')
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            village_data = json.load(f)
+        
+        return JsonResponse(village_data)
+    except FileNotFoundError:
+        return JsonResponse({'error': 'Village data not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 def get_available_villages(request):
-    """Return list of all available villages"""
-    villages = Claimant.objects.values(
-        'village_name', 'taluka', 'district'
-    ).distinct().order_by('village_name')
+    """API endpoint to get list of available villages"""
+    villages_dir = os.path.join(settings.BASE_DIR, 'data', 'villages')
+    villages = []
     
-    return JsonResponse({
-        'villages': list(villages)
-    })
+    if os.path.exists(villages_dir):
+        for filename in os.listdir(villages_dir):
+            if filename.endswith('.json'):
+                try:
+                    file_path = os.path.join(villages_dir, filename)
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        village_data = json.load(f)
+                        villages.append({
+                            'name': village_data.get('document_details', {}).get('village_name', filename.replace('.json', '')),
+                            'filename': filename.replace('.json', '')
+                        })
+                except Exception as e:
+                    print(f"Error loading {filename}: {e}")
+                    continue
+    
+    return JsonResponse({'villages': villages})
 
 def analytics(request):
     """Analytics page showcasing PM Yojanas"""
     return render(request, 'analytics.html')
 
 def pm_kisan_details(request):
-    """PM Kisan Yojana details page with FRA claimant eligibility analysis"""
+    """PM Kisan details page with FRA claimant eligibility analysis"""
     import json
     import os
     from django.conf import settings
@@ -59,6 +72,8 @@ def pm_kisan_details(request):
     villages_data = []
     total_claimants = 0
     eligible_claimants = 0
+    priority_claimants = 0
+    high_priority_claimants = 0
     
     villages_dir = os.path.join(settings.BASE_DIR, 'data', 'villages')
     
@@ -70,7 +85,7 @@ def pm_kisan_details(request):
                     with open(file_path, 'r', encoding='utf-8') as f:
                         village_data = json.load(f)
                         
-                    # Process claimants for eligibility
+                    # Process claimants for PM Kisan eligibility
                     processed_claimants = []
                     for claimant in village_data.get('claimants', []):
                         # Convert area to float for comparison
@@ -80,10 +95,22 @@ def pm_kisan_details(request):
                             area = 0
                         
                         claimant['area'] = area
-                        claimant['eligible'] = area <= 2.0  # PM Kisan eligibility: up to 2 hectares
                         
-                        if claimant['eligible']:
+                        # PM Kisan eligibility logic: area <= 2.0 hectares
+                        is_eligible = area <= 2.0
+                        is_priority = area <= 1.0  # Very small landholders get priority
+                        is_high_priority = area <= 0.5  # Extremely small landholders get high priority
+                        
+                        claimant['eligible'] = is_eligible
+                        claimant['priority'] = is_priority
+                        claimant['high_priority'] = is_high_priority
+                        
+                        if is_eligible:
                             eligible_claimants += 1
+                        if is_priority:
+                            priority_claimants += 1
+                        if is_high_priority:
+                            high_priority_claimants += 1
                         
                         total_claimants += 1
                         processed_claimants.append(claimant)
@@ -95,16 +122,12 @@ def pm_kisan_details(request):
                     print(f"Error loading {filename}: {e}")
                     continue
     
-    # Calculate statistics
-    eligible_percentage = round((eligible_claimants / total_claimants * 100) if total_claimants > 0 else 0, 1)
-    total_benefit_amount = eligible_claimants * 6000  # ₹6,000 per eligible claimant per year
-    
     context = {
         'villages_data': villages_data,
         'total_claimants': total_claimants,
         'eligible_claimants': eligible_claimants,
-        'eligible_percentage': eligible_percentage,
-        'total_benefit_amount': f"{total_benefit_amount:,}",
+        'priority_claimants': priority_claimants,
+        'high_priority_claimants': high_priority_claimants,
     }
     
     return render(request, 'pm_kisan_details.html', context)
@@ -120,6 +143,7 @@ def mgnrega_details(request):
     total_claimants = 0
     eligible_claimants = 0
     priority_claimants = 0
+    high_priority_claimants = 0
     
     villages_dir = os.path.join(settings.BASE_DIR, 'data', 'villages')
     
@@ -142,37 +166,39 @@ def mgnrega_details(request):
                         
                         claimant['area'] = area
                         
-                        # MGNREGA eligibility logic:
-                        # 1. All rural residents are eligible (FRA claimants are rural)
-                        # 2. Priority given to small landholders (≤ 2 hectares)
-                        # 3. Priority given to SC/ST communities (based on name patterns)
-                        # 4. Priority given to women (based on name patterns)
-                        
-                        is_eligible = True  # All FRA claimants are rural residents
+                        # MGNREGA eligibility logic: all rural residents are eligible
+                        # Priority based on economic status and community background
+                        is_eligible = True  # All rural residents are eligible
                         is_priority = False
+                        is_high_priority = False
                         
                         # Priority criteria
-                        if area <= 2.0:  # Small landholder
+                        if area <= 2.0:  # Small landholders
                             is_priority = True
                         
-                        # Check for SC/ST indicators in name (common patterns)
+                        # High priority criteria
                         name_lower = claimant.get('claimant_name', '').lower()
+                        
+                        # SC/ST communities get high priority
                         sc_st_indicators = ['chaudhari', 'gavali', 'malche', 'pawar', 'ahire', 'gaikwad', 'sonvane', 'gangurde', 'badhir', 'bhoye', 'deshmukh']
                         if any(indicator in name_lower for indicator in sc_st_indicators):
-                            is_priority = True
+                            is_high_priority = True
                         
-                        # Check for women (common name patterns)
-                        women_indicators = ['bai', 'bai', 'ya', 'i']
+                        # Women get high priority
+                        women_indicators = ['bai', 'ya', 'i']
                         if any(name_lower.endswith(indicator) for indicator in women_indicators):
-                            is_priority = True
+                            is_high_priority = True
                         
                         claimant['eligible'] = is_eligible
                         claimant['priority'] = is_priority
+                        claimant['high_priority'] = is_high_priority
                         
                         if is_eligible:
                             eligible_claimants += 1
                         if is_priority:
                             priority_claimants += 1
+                        if is_high_priority:
+                            high_priority_claimants += 1
                         
                         total_claimants += 1
                         processed_claimants.append(claimant)
@@ -184,15 +210,12 @@ def mgnrega_details(request):
                     print(f"Error loading {filename}: {e}")
                     continue
     
-    # Calculate statistics
-    total_work_days = eligible_claimants * 100  # 100 days per eligible household
-    
     context = {
         'villages_data': villages_data,
         'total_claimants': total_claimants,
         'eligible_claimants': eligible_claimants,
         'priority_claimants': priority_claimants,
-        'total_work_days': f"{total_work_days:,}",
+        'high_priority_claimants': high_priority_claimants,
     }
     
     return render(request, 'mgnrega_details.html', context)
@@ -231,21 +254,14 @@ def pm_jai_jeevan_details(request):
                         
                         claimant['area'] = area
                         
-                        # PM Jai Jeevan eligibility logic:
-                        # 1. All rural residents are eligible (FRA claimants are rural)
-                        # 2. Priority given to water-scarce areas (small landholders)
-                        # 3. High priority for SC/ST communities
-                        # 4. High priority for women-headed households
-                        # 5. High priority for areas with water quality issues
-                        
-                        is_eligible = True  # All FRA claimants are rural residents
+                        # PM Jai Jeevan eligibility logic: all rural residents are eligible
+                        # Priority based on water quality issues and economic status
+                        is_eligible = True  # All rural residents are eligible
                         is_priority = False
                         is_high_priority = False
                         
-                        # Priority criteria - water-scarce areas (small landholders)
-                        if area <= 1.5:  # Very small landholders likely in water-scarce areas
-                            is_priority = True
-                        elif area <= 2.0:  # Small landholders
+                        # Priority criteria - small landholders
+                        if area <= 2.0:  # Small landholders
                             is_priority = True
                         
                         # High priority criteria
@@ -256,12 +272,12 @@ def pm_jai_jeevan_details(request):
                         if any(indicator in name_lower for indicator in sc_st_indicators):
                             is_high_priority = True
                         
-                        # Women-headed households get high priority
+                        # Women get high priority
                         women_indicators = ['bai', 'ya', 'i']
                         if any(name_lower.endswith(indicator) for indicator in women_indicators):
                             is_high_priority = True
                         
-                        # Very small landholders (likely water-scarce) get high priority
+                        # Very small landholders get high priority
                         if area <= 1.0:
                             is_high_priority = True
                         
@@ -334,21 +350,14 @@ def pm_ayushman_details(request):
                         
                         claimant['area'] = area
                         
-                        # PM Ayushman Bharat eligibility logic:
-                        # 1. All rural residents are eligible (FRA claimants are rural)
-                        # 2. Priority given to economically weaker sections
-                        # 3. High priority for SC/ST communities
-                        # 4. High priority for women-headed households
-                        # 5. High priority for very small landholders (likely poor)
-                        
-                        is_eligible = True  # All FRA claimants are rural residents
+                        # PM Ayushman Bharat eligibility logic: all rural residents are eligible
+                        # Priority based on economic status and family size
+                        is_eligible = True  # All rural residents are eligible
                         is_priority = False
                         is_high_priority = False
                         
-                        # Priority criteria - economically weaker (small landholders)
-                        if area <= 1.5:  # Very small landholders likely economically weak
-                            is_priority = True
-                        elif area <= 2.0:  # Small landholders
+                        # Priority criteria - small landholders
+                        if area <= 2.0:  # Small landholders
                             is_priority = True
                         
                         # High priority criteria
@@ -359,27 +368,27 @@ def pm_ayushman_details(request):
                         if any(indicator in name_lower for indicator in sc_st_indicators):
                             is_high_priority = True
                         
-                        # Women-headed households get high priority
+                        # Women get high priority
                         women_indicators = ['bai', 'ya', 'i']
                         if any(name_lower.endswith(indicator) for indicator in women_indicators):
                             is_high_priority = True
                         
-                        # Very small landholders (likely poor) get high priority
+                        # Very small landholders get high priority
                         if area <= 1.0:
                             is_high_priority = True
                         
-                        # Areas with no claim number (likely economically weak) get high priority
+                        # Areas with no claim number (likely need healthcare) get high priority
                         if not claimant.get('claim_number') or claimant.get('claim_number') == 'null':
                             is_high_priority = True
                         
                         # Estimate family size based on area and community
-                        estimated_family_size = 4  # Default family size
+                        estimated_family_size = 4  # Default
                         if area <= 1.0:
-                            estimated_family_size = 6  # Larger families in smaller areas
+                            estimated_family_size = 6  # Larger families in smaller landholdings
                         elif area <= 2.0:
                             estimated_family_size = 5
                         
-                        # SC/ST families tend to be larger
+                        # SC/ST communities tend to have larger families
                         if any(indicator in name_lower for indicator in sc_st_indicators):
                             estimated_family_size += 1
                         
@@ -416,11 +425,10 @@ def pm_ayushman_details(request):
     return render(request, 'pm_ayushman_details.html', context)
 
 def pm_kaushal_details(request):
-    """PM Kaushal Vikas Yojana details page with FRA claimant eligibility analysis"""
+    """PM Kaushal Vikas details page with FRA claimant eligibility analysis"""
     import json
     import os
     from django.conf import settings
-    import random
     
     # Load all village data from JSON files
     villages_data = []
@@ -450,52 +458,54 @@ def pm_kaushal_details(request):
                         
                         claimant['area'] = area
                         
-                        # PM Kaushal Vikas eligibility logic:
-                        # 1. Age requirement: 15-45 years (estimated based on serial number and name patterns)
-                        # 2. All rural residents are eligible (FRA claimants are rural)
-                        # 3. Priority given to SC/ST communities
-                        # 4. Priority given to women
-                        # 5. Priority given to economically weaker sections (small landholders)
-                        
-                        # Estimate age based on serial number and name patterns
-                        estimated_age = 25 + (claimant.get('serial_number', 1) % 20)  # Age range 25-44
-                        
-                        # Adjust age based on name patterns (women tend to be younger in rural areas)
-                        name_lower = claimant.get('claimant_name', '').lower()
-                        women_indicators = ['bai', 'ya', 'i']
-                        if any(name_lower.endswith(indicator) for indicator in women_indicators):
-                            estimated_age = 22 + (claimant.get('serial_number', 1) % 18)  # Age range 22-39
-                        
-                        # SC/ST communities might have different age patterns
-                        sc_st_indicators = ['chaudhari', 'gavali', 'malche', 'pawar', 'ahire', 'gaikwad', 'sonvane', 'gangurde', 'badhir', 'bhoye', 'deshmukh']
-                        if any(indicator in name_lower for indicator in sc_st_indicators):
-                            estimated_age = 24 + (claimant.get('serial_number', 1) % 19)  # Age range 24-42
+                        # Estimate age based on serial number
+                        serial_number = claimant.get('serial_number', '1')
+                        try:
+                            serial_num = int(serial_number)
+                            # Estimate age: younger serial numbers = older people
+                            # Assuming serial numbers 1-50 are older (40-60), 51-100 are middle-aged (25-40), 101+ are younger (18-35)
+                            if serial_num <= 50:
+                                estimated_age = 50 - (serial_num * 0.4)  # 30-50 years
+                            elif serial_num <= 100:
+                                estimated_age = 40 - ((serial_num - 50) * 0.3)  # 25-40 years
+                            else:
+                                estimated_age = 35 - ((serial_num - 100) * 0.2)  # 18-35 years
+                            
+                            estimated_age = max(18, min(65, int(estimated_age)))
+                        except (ValueError, TypeError):
+                            estimated_age = 35  # Default age
                         
                         claimant['estimated_age'] = estimated_age
                         
-                        # Age eligibility check (15-45 years)
+                        # PM Kaushal Vikas eligibility logic: age 15-45 years
                         is_eligible = 15 <= estimated_age <= 45
                         is_priority = False
                         is_high_priority = False
                         
-                        if is_eligible:
-                            # Priority criteria
-                            if area <= 2.0:  # Small landholders
-                                is_priority = True
-                            
-                            # High priority criteria
-                            if any(indicator in name_lower for indicator in sc_st_indicators):
-                                is_high_priority = True
-                            
-                            if any(name_lower.endswith(indicator) for indicator in women_indicators):
-                                is_high_priority = True
-                            
-                            if area <= 1.0:  # Very small landholders
-                                is_high_priority = True
-                            
-                            # Young adults (18-30) get high priority for skill development
-                            if 18 <= estimated_age <= 30:
-                                is_high_priority = True
+                        # Priority criteria - small landholders
+                        if area <= 2.0 and is_eligible:  # Small landholders
+                            is_priority = True
+                        
+                        # High priority criteria
+                        name_lower = claimant.get('claimant_name', '').lower()
+                        
+                        # SC/ST communities get high priority
+                        sc_st_indicators = ['chaudhari', 'gavali', 'malche', 'pawar', 'ahire', 'gaikwad', 'sonvane', 'gangurde', 'badhir', 'bhoye', 'deshmukh']
+                        if any(indicator in name_lower for indicator in sc_st_indicators) and is_eligible:
+                            is_high_priority = True
+                        
+                        # Women get high priority
+                        women_indicators = ['bai', 'ya', 'i']
+                        if any(name_lower.endswith(indicator) for indicator in women_indicators) and is_eligible:
+                            is_high_priority = True
+                        
+                        # Very small landholders get high priority
+                        if area <= 1.0 and is_eligible:
+                            is_high_priority = True
+                        
+                        # Young adults (18-30) get high priority
+                        if 18 <= estimated_age <= 30 and is_eligible:
+                            is_high_priority = True
                         
                         claimant['eligible'] = is_eligible
                         claimant['priority'] = is_priority
@@ -810,3 +820,7 @@ def startup_india_details(request):
     }
     
     return render(request, 'startup_india_details.html', context)
+
+def about(request):
+    """About page for FRA Atlas"""
+    return render(request, 'about.html')

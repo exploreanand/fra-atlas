@@ -41,7 +41,8 @@ COPY requirements.txt /app/
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir GDAL==3.4.1
 
 # Copy project files
 COPY . /app/

@@ -43,10 +43,8 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Install GDAL Python bindings that match system version
-RUN echo "System GDAL version:" && gdal-config --version && \
-    echo "Installing GDAL Python bindings..." && \
-    pip install --no-cache-dir GDAL==$(gdal-config --version) && \
+# Install GDAL Python bindings using system packages
+RUN apt-get update && apt-get install -y python3-gdal && \
     echo "GDAL installation completed" && \
     python -c "import gdal; print('GDAL import successful')" || echo "GDAL import failed"
 

@@ -46,7 +46,13 @@ RUN pip install --upgrade pip && \
 # Install GDAL Python bindings using system packages
 RUN apt-get update && apt-get install -y python3-gdal && \
     echo "GDAL installation completed" && \
-    python -c "import gdal; print('GDAL import successful')" || echo "GDAL import failed"
+    echo "Checking Python path:" && python -c "import sys; print(sys.path)" && \
+    echo "Checking available modules:" && python -c "import pkgutil; [print(name) for _, name, _ in pkgutil.iter_modules() if 'gdal' in name.lower()]" && \
+    echo "Trying different import methods:" && \
+    (python -c "import gdal; print('GDAL import successful')" || \
+     python -c "import osgeo.gdal as gdal; print('osgeo.gdal import successful')" || \
+     python -c "from osgeo import gdal; print('from osgeo import gdal successful')" || \
+     echo "All GDAL import methods failed")
 
 # Copy project files
 COPY . /app/

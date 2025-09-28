@@ -21,6 +21,11 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Find and set the correct library paths
+RUN echo "GDAL library path:" && find /usr -name "*gdal*" -type f 2>/dev/null | head -5 && \
+    echo "GEOS library path:" && find /usr -name "*geos*" -type f 2>/dev/null | head -5 && \
+    echo "PROJ library path:" && find /usr -name "*proj*" -type f 2>/dev/null | head -5
+
 # Set working directory
 WORKDIR /app
 

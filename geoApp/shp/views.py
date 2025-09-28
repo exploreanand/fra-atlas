@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.conf import settings
 from .models import Shp, Claimant
 from tiff.models import Tiff
 from note.models import Note
@@ -8,7 +9,14 @@ from note.models import Note
 def index(request):
     shp = Shp.objects.all()
     tiff = Tiff.objects.all()
-    return render(request, 'index.html', {'shp': shp, 'tiff': tiff, 'note': note})
+    note = Note.objects.all()
+    context = {
+        'shp': shp, 
+        'tiff': tiff, 
+        'note': note,
+        'geoserver_url': getattr(settings, 'GEOSERVER_URL', 'http://localhost:8080/geoserver')
+    }
+    return render(request, 'index.html', context)
 
 def note(request):
     if(request.method == 'POST'):

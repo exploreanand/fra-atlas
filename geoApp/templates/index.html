@@ -438,7 +438,7 @@ $('.pin').on('click', function(){
 
      // Create shapefile layers but don't add them to overlayMaps (users can select via dropdown)
     {% for s in shp %}
-    var {{ s.name }} = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+    var {{ s.name }} = L.tileLayer.wms('{{ geoserver_url }}/wms', {
         layers: 'geoapp:{{ s.name }}',
         transparent: true,
         format: 'image/png',
@@ -718,7 +718,7 @@ $('.pin').on('click', function(){
              console.log('Final CQL Filter:', cqlFilter);
              
              // Create a highlighted version of the layer with CQL filter
-             var highlightedLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+             var highlightedLayer = L.tileLayer.wms('{{ geoserver_url }}/wms', {
                  layers: 'geoapp:' + layerName,
                  transparent: true,
                  format: 'image/png',
@@ -753,7 +753,7 @@ $('.pin').on('click', function(){
 
     // TIFF/Raster layers
     {% for t in tiff %}
-    var {{ t.name }} = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+    var {{ t.name }} = L.tileLayer.wms('{{ geoserver_url }}/wms', {
         layers: '{{t.name}}',
         transparent: true,
         format: 'image/png',
@@ -1071,7 +1071,7 @@ $('.pin').on('click', function(){
              console.log('Specific CQL Filter:', specificCqlFilter);
              
              // Create a specific highlighted layer with BLUE styling for single feature
-             var specificHighlightLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+             var specificHighlightLayer = L.tileLayer.wms('{{ geoserver_url }}/wms', {
                  layers: 'geoapp:' + layerName,
                  transparent: true,
                  format: 'image/png',

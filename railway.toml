@@ -1,0 +1,12 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "gunicorn geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[environments.production]
+variables = { DEBUG = "False" }

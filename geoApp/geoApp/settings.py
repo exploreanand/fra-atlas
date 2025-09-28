@@ -94,16 +94,13 @@ DATABASES = {
     )
 }
 
-# GDAL/GEOS/PROJ library paths - only set if not in Docker
+# GDAL/GEOS/PROJ library paths - only set for local development (macOS)
+# In Docker, let Django auto-detect the libraries
 if not os.getenv('DOCKER_ENV'):
     GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH', '/opt/homebrew/opt/gdal/lib/libgdal.dylib')
     GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH', '/opt/homebrew/opt/geos/lib/libgeos_c.dylib')
     PROJ_LIBRARY_PATH = os.getenv('PROJ_LIBRARY_PATH', '/opt/homebrew/opt/proj/lib/libproj.dylib')
-else:
-    # Use system libraries in Docker
-    GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/libgdal.so')
-    GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/libgeos_c.so')
-    PROJ_LIBRARY_PATH = os.getenv('PROJ_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/libproj.so')
+# In Docker, Django will auto-detect the libraries from the system
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y \
 # Find and set the correct library paths
 RUN echo "GDAL library path:" && find /usr -name "*gdal*" -type f 2>/dev/null | head -5 && \
     echo "GEOS library path:" && find /usr -name "*geos*" -type f 2>/dev/null | head -5 && \
-    echo "PROJ library path:" && find /usr -name "*proj*" -type f 2>/dev/null | head -5
+    echo "PROJ library path:" && find /usr -name "*proj*" -type f 2>/dev/null | head -5 && \
+    echo "ldconfig libraries:" && ldconfig -p | grep -E "(gdal|geos|proj)" && \
+    echo "Python GDAL test:" && python3 -c "from osgeo import gdal; print('GDAL import successful')" || echo "GDAL import failed"
 
 # Set working directory
 WORKDIR /app

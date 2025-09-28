@@ -8,7 +8,7 @@ dj-database-url==2.1.0
 psycopg2-binary==2.9.10
 
 # Geospatial Libraries
-# GDAL will be auto-detected from system installation
+GDAL==3.10.3
 Shapely==2.1.1
 Fiona==1.10.1
 GeoPandas==1.1.1

@@ -1,37 +1,10 @@
-# Use Ubuntu base image with GDAL pre-installed
-FROM ubuntu:22.04
+# Alternative Dockerfile using kartoza/django image with GDAL pre-installed
+FROM kartoza/django:4.2
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DOCKER_ENV=1
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install Python and system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.11 \
-    python3.11-dev \
-    python3.11-venv \
-    python3-pip \
-    gdal-bin \
-    libgdal-dev \
-    libgeos-dev \
-    libproj-dev \
-    proj-bin \
-    proj-data \
-    build-essential \
-    curl \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create symbolic links for python
-RUN ln -s /usr/bin/python3.11 /usr/bin/python && \
-    ln -s /usr/bin/python3.11 /usr/bin/python3
-
-# Set GDAL environment variables
-ENV GDAL_CONFIG=/usr/bin/gdal-config
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
 
 # Set working directory
 WORKDIR /app

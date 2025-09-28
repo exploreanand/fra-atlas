@@ -22,6 +22,12 @@
 3. Select your repository
 4. Railway will automatically detect the Dockerfile
 
+**Note**: If you encounter GDAL version conflicts during Docker build, you have two alternative Dockerfiles:
+- `Dockerfile.simple` - Uses Ubuntu base with system GDAL
+- `Dockerfile.alternative` - Uses kartoza/django base image
+
+To use an alternative Dockerfile, rename it to `Dockerfile` before deploying.
+
 ### Step 3: Add PostgreSQL Database
 1. In your Railway project, click "New" → "Database" → "PostgreSQL"
 2. Railway will automatically provide `DATABASE_URL` environment variable
@@ -126,7 +132,11 @@ services:
 
 ### Common Issues
 
-1. **GDAL/GEOS errors**: Ensure Dockerfile installs system libraries
+1. **GDAL version conflicts**: 
+   - Error: "Python bindings of GDAL X.X.X require at least libgdal X.X.X, but X.X.X was found"
+   - Solution: Use `Dockerfile.simple` or `Dockerfile.alternative` instead
+   - Alternative: Remove GDAL from requirements.txt and let it auto-detect
+
 2. **Database connection**: Check `DATABASE_URL` format
 3. **Static files**: Verify WhiteNoise configuration
 4. **GeoServer CORS**: Enable CORS in GeoServer settings

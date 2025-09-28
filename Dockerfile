@@ -41,7 +41,7 @@ WORKDIR /app/geoApp
 
 # Create logs directory in Django app and collect static files
 RUN mkdir -p /app/geoApp/logs && chmod 755 /app/geoApp/logs && \
-    python manage.py collectstatic --noinput || true
+    python3 manage.py collectstatic --noinput || true
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser && \
@@ -56,4 +56,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:$PORT/ || exit 1
 
 # Run migrations and start server
-CMD ["bash", "-c", "cd /app/geoApp && mkdir -p logs && python manage.py migrate && python manage.py setup_production && gunicorn geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120"]
+CMD ["bash", "-c", "cd /app/geoApp && mkdir -p logs && python3 manage.py migrate && python3 manage.py setup_production && gunicorn geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120"]

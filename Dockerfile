@@ -41,8 +41,14 @@ COPY requirements.txt /app/
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir GDAL==3.4.1
+    pip install --no-cache-dir -r requirements.txt
+
+# Install GDAL Python bindings that match system version
+RUN echo "System GDAL version:" && gdal-config --version && \
+    echo "Installing GDAL Python bindings..." && \
+    pip install --no-cache-dir GDAL==$(gdal-config --version) && \
+    echo "GDAL installation completed" && \
+    python -c "import gdal; print('GDAL import successful')" || echo "GDAL import failed"
 
 # Copy project files
 COPY . /app/

@@ -4,6 +4,7 @@ FROM ubuntu:22.04
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DOCKER_ENV=1
 
 # Install system dependencies including GDAL
 RUN apt-get update && apt-get install -y \

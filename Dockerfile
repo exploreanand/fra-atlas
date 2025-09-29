@@ -46,7 +46,14 @@ WORKDIR /app/geoApp
 # Create logs directory in Django app and collect static files
 RUN mkdir -p /app/geoApp/logs && chmod 755 /app/geoApp/logs && \
     mkdir -p /app/geoApp/staticfiles && \
-    python3 manage.py collectstatic --noinput
+    echo "=== DEBUGGING STATIC FILES ===" && \
+    ls -la /app/geoApp/static/ && \
+    echo "=== RUNNING COLLECTSTATIC ===" && \
+    python3 manage.py collectstatic --noinput --verbosity=2 && \
+    echo "=== CHECKING COLLECTED FILES ===" && \
+    ls -la /app/geoApp/staticfiles/ && \
+    ls -la /app/geoApp/staticfiles/dist/ 2>/dev/null || echo "No dist directory" && \
+    ls -la /app/geoApp/staticfiles/lib/ 2>/dev/null || echo "No lib directory"
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser && \

@@ -167,4 +167,4 @@ django_pro1/
 temp/
 tmp/
 *.tmp
-*.temp
+*.tempbackup_static_*/

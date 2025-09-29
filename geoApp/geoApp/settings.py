@@ -134,12 +134,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 
-# WhiteNoise configuration for static files (non-manifest to avoid 404s)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (for file uploads)
 MEDIA_URL = '/media/'

@@ -21,12 +21,8 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Find and set the correct library paths
-RUN echo "GDAL library path:" && find /usr -name "*gdal*" -type f 2>/dev/null | head -5 && \
-    echo "GEOS library path:" && find /usr -name "*geos*" -type f 2>/dev/null | head -5 && \
-    echo "PROJ library path:" && find /usr -name "*proj*" -type f 2>/dev/null | head -5 && \
-    echo "ldconfig libraries:" && ldconfig -p | grep -E "(gdal|geos|proj)" && \
-    echo "Python GDAL test:" && python3 -c "from osgeo import gdal; print('GDAL import successful')" || echo "GDAL import failed"
+# Verify GDAL at build (minimal)
+RUN python3 -c "from osgeo import gdal; print('GDAL OK')" || true
 
 # Set working directory
 WORKDIR /app
@@ -59,8 +55,8 @@ USER appuser
 # Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=12 \
+# Health check (robust defaults)
+HEALTHCHECK --interval=15s --timeout=5s --start-period=45s --retries=8 \
     CMD curl -sf http://127.0.0.1:${PORT:-8000}/health || exit 1
 
 # Run migrations and start server

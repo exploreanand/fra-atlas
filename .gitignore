@@ -10,11 +10,14 @@ __pycache__/
 .Python
 build/
 develop-eggs/
+# Python distribution directories (but allow our static files)
 dist/
+!geoApp/static/dist/
 downloads/
 eggs/
 .eggs/
 lib/
+!geoApp/static/lib/
 lib64/
 parts/
 sdist/

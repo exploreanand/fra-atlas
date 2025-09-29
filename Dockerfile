@@ -1,4 +1,5 @@
 # Use Ubuntu with Python and install GDAL properly
+# Force rebuild: 2025-09-30 03:00 - Debugging static files issue
 FROM ubuntu:22.04
 
 # Set environment variables
@@ -46,14 +47,21 @@ WORKDIR /app/geoApp
 # Create logs directory in Django app and collect static files
 RUN mkdir -p /app/geoApp/logs && chmod 755 /app/geoApp/logs && \
     mkdir -p /app/geoApp/staticfiles && \
-    echo "=== DEBUGGING STATIC FILES ===" && \
+    echo "=== DEBUGGING STATIC FILES - $(date) ===" && \
+    echo "=== CHECKING SOURCE STATIC FILES ===" && \
     ls -la /app/geoApp/static/ && \
+    echo "=== CHECKING DIST DIRECTORY ===" && \
+    ls -la /app/geoApp/static/dist/ 2>/dev/null || echo "No dist directory in source" && \
+    echo "=== CHECKING LIB DIRECTORY ===" && \
+    ls -la /app/geoApp/static/lib/ 2>/dev/null || echo "No lib directory in source" && \
     echo "=== RUNNING COLLECTSTATIC ===" && \
     python3 manage.py collectstatic --noinput --verbosity=2 && \
     echo "=== CHECKING COLLECTED FILES ===" && \
     ls -la /app/geoApp/staticfiles/ && \
-    ls -la /app/geoApp/staticfiles/dist/ 2>/dev/null || echo "No dist directory" && \
-    ls -la /app/geoApp/staticfiles/lib/ 2>/dev/null || echo "No lib directory"
+    echo "=== CHECKING COLLECTED DIST ===" && \
+    ls -la /app/geoApp/staticfiles/dist/ 2>/dev/null || echo "No dist directory collected" && \
+    echo "=== CHECKING COLLECTED LIB ===" && \
+    ls -la /app/geoApp/staticfiles/lib/ 2>/dev/null || echo "No lib directory collected"
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser && \

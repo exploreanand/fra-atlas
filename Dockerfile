@@ -60,8 +60,8 @@ USER appuser
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --start-period=60s --retries=12 \
+    CMD curl -sf http://127.0.0.1:${PORT:-8000}/health || exit 1
 
 # Run migrations and start server
 CMD ["bash", "-c", "cd /app/geoApp && mkdir -p logs && echo 'Starting Django application...' && echo 'PORT is: '${PORT:-8000} && (python3 manage.py migrate || echo 'Migrations failed, continuing') && echo 'Migrations step done' && (python3 manage.py setup_production || echo 'Setup_production failed, continuing') && echo 'Setup step done' && echo 'Starting Gunicorn on port '${PORT:-8000} && gunicorn geoApp.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 1 --timeout 120 --access-logfile - --error-logfile - --log-level debug"]

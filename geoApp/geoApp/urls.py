@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.http import HttpResponse
 from shp.views import index, get_claimants_data, get_available_villages, analytics, pm_kisan_details, mgnrega_details, pm_jai_jeevan_details, pm_ayushman_details, pm_kaushal_details, digital_india_details, startup_india_details
 from note.views import note
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('health', lambda request: HttpResponse('ok'), name='health'),
     path('',index, name='index' ),
     path('note/', note, name='note'),
     path('analytics/', analytics, name='analytics'),

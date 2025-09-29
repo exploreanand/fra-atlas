@@ -91,10 +91,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'geoApp.wsgi.application'
 
 # Database
-# Use DATABASE_URL for production, fallback to local for development
+# Prefer DATABASE_URL (or RAILWAY_DATABASE_URL) and fallback to local
+_db_url = os.getenv('DATABASE_URL') or os.getenv('RAILWAY_DATABASE_URL') or 'postgis://postgres:123456@localhost:5432/geoapp'
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgis://postgres:123456@localhost:5432/geoapp',
+    'default': dj_database_url.parse(
+        _db_url,
         conn_max_age=600,
         ssl_require=not DEBUG
     )

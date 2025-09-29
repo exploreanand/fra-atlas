@@ -2,8 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-# Temporary: use Django dev server to surface errors in logs for healthcheck debug
-startCommand = "python3 manage.py runserver 0.0.0.0:$PORT"
+startCommand = "bash -lc 'cd geoApp && echo Starting migrations && python3 manage.py migrate --noinput || true && echo Migrations done && gunicorn geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --log-level debug --access-logfile - --error-logfile -'"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"

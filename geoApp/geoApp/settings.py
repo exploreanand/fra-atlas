@@ -23,8 +23,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-@*#8*%&7b1)y_mbdj#4mpcq*$j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-# Production hosts
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Production hosts (include Railway domains by default)
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS',
+    'localhost,127.0.0.1,.railway.app,healthcheck.railway.app'
+).split(',')
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
@@ -33,6 +36,9 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+
+# Allow controlling SSL redirect via environment
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() == 'true'
 
 # CSRF settings
 CSRF_COOKIE_SECURE = not DEBUG

@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <link rel="stylesheet" href="{% static 'lib/MarkerCluster.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/MarkerCluster.Default.css' %}">
+    <link rel="stylesheet" href="{% static './lib/MarkerCluster.css' %}">
+    <link rel="stylesheet" href="{% static './lib/MarkerCluster.Default.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'dist/style.css' %}">
+    <link rel="stylesheet" href=" {% static './dist/style.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -381,10 +381,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="{% static 'data/leaflet.markercluster.js' %}"></script>
-<script src="{% static 'data/test.js' %}"></script>
-<script src="{% static 'dist/main.js' %}"></script>
-<script src="{% static 'dist/web-GIS.js' %}"></script>
+<script src="{% static './data/leaflet.markercluster.js' %}"></script>
+<script src="{% static './data/test.js' %}"></script>
+<script src="{% static './lib/leaflet.browser.print.min.js' %}"></script>
+<script src="{% static './dist/main.js' %}"></script>
+<script src="{% static './dist/web-GIS.js' %}"></script>
 <script>
 
 // Prevent event propagation for custom controls
@@ -1109,6 +1110,84 @@ $('.pin').on('click', function(){
              console.log('Added BLUE specific highlight for patta_id:', serialNumber, 'in village:', villageName);
          }
          {% endfor %}
+     }
+
+     // Dropdown update functions
+     function updateDistricts() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+         
+         // Clear and disable dependent dropdowns
+         districtSelect.innerHTML = '<option value="">🏘️ All Districts</option>';
+         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
+         talukaSelect.disabled = true;
+         villageSelect.disabled = true;
+         
+         if (stateSelect.value && locationData[stateSelect.value]) {
+             var districts = Object.keys(locationData[stateSelect.value]);
+             districts.forEach(function(district) {
+                 var option = document.createElement('option');
+                 option.value = district;
+                 option.textContent = '🏘️ ' + district;
+                 districtSelect.appendChild(option);
+             });
+             districtSelect.disabled = false;
+         } else {
+             districtSelect.disabled = true;
+         }
+     }
+
+     function updateTalukas() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+         
+         // Clear and disable dependent dropdowns
+         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
+         villageSelect.disabled = true;
+         
+         if (stateSelect.value && districtSelect.value && 
+             locationData[stateSelect.value][districtSelect.value]) {
+             var talukas = Object.keys(locationData[stateSelect.value][districtSelect.value]);
+             talukas.forEach(function(taluka) {
+                 var option = document.createElement('option');
+                 option.value = taluka;
+                 option.textContent = '🏡 ' + taluka;
+                 talukaSelect.appendChild(option);
+             });
+             talukaSelect.disabled = false;
+         } else {
+             talukaSelect.disabled = true;
+         }
+     }
+
+     function updateVillages() {
+         var stateSelect = document.getElementById('stateSelect');
+         var districtSelect = document.getElementById('districtSelect');
+         var talukaSelect = document.getElementById('talukaSelect');
+         var villageSelect = document.getElementById('villageSelect');
+         
+         // Clear village dropdown
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
+         
+         if (stateSelect.value && districtSelect.value && talukaSelect.value && 
+             locationData[stateSelect.value][districtSelect.value][talukaSelect.value]) {
+             var villages = locationData[stateSelect.value][districtSelect.value][talukaSelect.value];
+             villages.forEach(function(village) {
+                 var option = document.createElement('option');
+                 option.value = village;
+                 option.textContent = '🏠 ' + village;
+                 villageSelect.appendChild(option);
+             });
+             villageSelect.disabled = false;
+         } else {
+             villageSelect.disabled = true;
+         }
      }
 
 </script>

@@ -9,7 +9,12 @@ function fullScreenView() {
     }
 }
 
-L.control.browserPrint({position: 'topright'}).addTo(map);
+// Add browser print control if available
+if (typeof L.control.browserPrint === 'function') {
+    L.control.browserPrint({position: 'topright'}).addTo(map);
+} else {
+    console.log('Browser print control not available');
+}
 
 // Search
 new L.Control.Geocoder().addTo(map);

@@ -2,7 +2,7 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "bash -lc 'echo Starting migrations && python3 /app/geoApp/manage.py migrate --noinput || true && python3 /app/geoApp/manage.py setup_production || true && echo Migrations done && gunicorn --chdir /app/geoApp geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 90 --graceful-timeout 30 --log-level info --access-logfile - --error-logfile -'"
+startCommand = "bash -lc 'echo Starting migrations && python3 /app/geoApp/manage.py migrate --noinput || true && python3 /app/geoApp/manage.py collectstatic --noinput || true && python3 /app/geoApp/manage.py setup_production || true && echo Migrations done && gunicorn --chdir /app/geoApp geoApp.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 90 --graceful-timeout 30 --log-level info --access-logfile - --error-logfile -'"
 healthcheckPath = "/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"

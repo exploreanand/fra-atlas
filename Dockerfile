@@ -43,8 +43,10 @@ RUN mkdir -p /app/logs && chmod 755 /app/logs
 # Change to the correct directory for Django commands
 WORKDIR /app/geoApp
 
-# Create logs directory in Django app
-RUN mkdir -p /app/geoApp/logs && chmod 755 /app/geoApp/logs
+# Create logs directory in Django app and collect static files
+RUN mkdir -p /app/geoApp/logs && chmod 755 /app/geoApp/logs && \
+    mkdir -p /app/geoApp/staticfiles && \
+    python3 manage.py collectstatic --noinput
 
 # Create a non-root user
 RUN adduser --disabled-password --gecos '' appuser && \

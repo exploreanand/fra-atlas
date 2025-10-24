@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.browser.print@0.0.4/dist/leaflet.browser.print.min.css" />
     <link rel="stylesheet" href="{% static './lib/MarkerCluster.css' %}">
     <link rel="stylesheet" href="{% static './lib/MarkerCluster.Default.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -379,6 +381,7 @@
 
 </html>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{% static './data/leaflet.markercluster.js' %}"></script>
@@ -860,9 +863,9 @@ $('.pin').on('click', function(){
          var villageSelect = document.getElementById('villageSelect');
 
          // Clear and disable subsequent dropdowns
-         districtSelect.innerHTML = '<option value="">All Districts</option>';
-         talukaSelect.innerHTML = '<option value="">All Talukas</option>';
-         villageSelect.innerHTML = '<option value="">All Villages</option>';
+         districtSelect.innerHTML = '<option value="">🏘️ All Districts</option>';
+         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
          talukaSelect.disabled = true;
          villageSelect.disabled = true;
 
@@ -871,7 +874,7 @@ $('.pin').on('click', function(){
              districts.forEach(function(district) {
                  var option = document.createElement('option');
                  option.value = district;
-                 option.textContent = district;
+                 option.textContent = '🏘️ ' + district;
                  districtSelect.appendChild(option);
              });
              districtSelect.disabled = false;
@@ -893,8 +896,8 @@ $('.pin').on('click', function(){
          var villageSelect = document.getElementById('villageSelect');
 
          // Clear and disable subsequent dropdowns
-         talukaSelect.innerHTML = '<option value="">All Talukas</option>';
-         villageSelect.innerHTML = '<option value="">All Villages</option>';
+         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
          villageSelect.disabled = true;
 
          if (stateSelect.value && districtSelect.value && locationData[stateSelect.value][districtSelect.value]) {
@@ -902,7 +905,7 @@ $('.pin').on('click', function(){
              talukas.forEach(function(taluka) {
                  var option = document.createElement('option');
                  option.value = taluka;
-                 option.textContent = taluka;
+                 option.textContent = '🏡 ' + taluka;
                  talukaSelect.appendChild(option);
              });
              talukaSelect.disabled = false;
@@ -924,7 +927,7 @@ $('.pin').on('click', function(){
          var villageSelect = document.getElementById('villageSelect');
 
          // Clear village dropdown
-         villageSelect.innerHTML = '<option value="">All Villages</option>';
+         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
 
          if (stateSelect.value && districtSelect.value && talukaSelect.value && 
              locationData[stateSelect.value][districtSelect.value][talukaSelect.value]) {
@@ -932,7 +935,7 @@ $('.pin').on('click', function(){
              villages.forEach(function(village) {
                  var option = document.createElement('option');
                  option.value = village;
-                 option.textContent = village;
+                 option.textContent = '🏠 ' + village;
                  villageSelect.appendChild(option);
              });
              villageSelect.disabled = false;
@@ -1112,82 +1115,5 @@ $('.pin').on('click', function(){
          {% endfor %}
      }
 
-     // Dropdown update functions
-     function updateDistricts() {
-         var stateSelect = document.getElementById('stateSelect');
-         var districtSelect = document.getElementById('districtSelect');
-         var talukaSelect = document.getElementById('talukaSelect');
-         var villageSelect = document.getElementById('villageSelect');
-         
-         // Clear and disable dependent dropdowns
-         districtSelect.innerHTML = '<option value="">🏘️ All Districts</option>';
-         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
-         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
-         talukaSelect.disabled = true;
-         villageSelect.disabled = true;
-         
-         if (stateSelect.value && locationData[stateSelect.value]) {
-             var districts = Object.keys(locationData[stateSelect.value]);
-             districts.forEach(function(district) {
-                 var option = document.createElement('option');
-                 option.value = district;
-                 option.textContent = '🏘️ ' + district;
-                 districtSelect.appendChild(option);
-             });
-             districtSelect.disabled = false;
-         } else {
-             districtSelect.disabled = true;
-         }
-     }
-
-     function updateTalukas() {
-         var stateSelect = document.getElementById('stateSelect');
-         var districtSelect = document.getElementById('districtSelect');
-         var talukaSelect = document.getElementById('talukaSelect');
-         var villageSelect = document.getElementById('villageSelect');
-         
-         // Clear and disable dependent dropdowns
-         talukaSelect.innerHTML = '<option value="">🏡 All Talukas</option>';
-         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
-         villageSelect.disabled = true;
-         
-         if (stateSelect.value && districtSelect.value && 
-             locationData[stateSelect.value][districtSelect.value]) {
-             var talukas = Object.keys(locationData[stateSelect.value][districtSelect.value]);
-             talukas.forEach(function(taluka) {
-                 var option = document.createElement('option');
-                 option.value = taluka;
-                 option.textContent = '🏡 ' + taluka;
-                 talukaSelect.appendChild(option);
-             });
-             talukaSelect.disabled = false;
-         } else {
-             talukaSelect.disabled = true;
-         }
-     }
-
-     function updateVillages() {
-         var stateSelect = document.getElementById('stateSelect');
-         var districtSelect = document.getElementById('districtSelect');
-         var talukaSelect = document.getElementById('talukaSelect');
-         var villageSelect = document.getElementById('villageSelect');
-         
-         // Clear village dropdown
-         villageSelect.innerHTML = '<option value="">🏠 All Villages</option>';
-         
-         if (stateSelect.value && districtSelect.value && talukaSelect.value && 
-             locationData[stateSelect.value][districtSelect.value][talukaSelect.value]) {
-             var villages = locationData[stateSelect.value][districtSelect.value][talukaSelect.value];
-             villages.forEach(function(village) {
-                 var option = document.createElement('option');
-                 option.value = village;
-                 option.textContent = '🏠 ' + village;
-                 villageSelect.appendChild(option);
-             });
-             villageSelect.disabled = false;
-         } else {
-             villageSelect.disabled = true;
-         }
-     }
 
 </script>

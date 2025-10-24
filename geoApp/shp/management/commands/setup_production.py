@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db import connection
+from django.core.management import call_command
 import os
 
 
@@ -35,6 +36,18 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.WARNING(f'PostGIS setup warning: {e}')
                 )
+        
+        # Load village data
+        try:
+            self.stdout.write('Loading village data...')
+            call_command('load_village_data')
+            self.stdout.write(
+                self.style.SUCCESS('Village data loaded successfully')
+            )
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(f'Village data loading warning: {e}')
+            )
         
         self.stdout.write(
             self.style.SUCCESS('Production setup completed!')

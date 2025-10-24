@@ -459,29 +459,84 @@ $('.pin').on('click', function(){
     {% endfor %}
     {% if not shp %}
     console.log('WARNING: No shapefiles found in database! Creating default layers...');
-    // Create default layers for known villages
-    window.kadupada = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+    
+    // Check if GeoServer is available by testing the URL
+    var geoserverUrl = '{{ geoserver_url }}';
+    console.log('Testing GeoServer URL:', geoserverUrl);
+    
+    // Create default layers for known villages with error handling
+    window.kadupada = L.tileLayer.wms(geoserverUrl + '/wms', {
         layers: 'geoapp:kadupada',
         transparent: true,
         format: 'image/png',
+    }).on('tileerror', function(error) {
+        console.log('GeoServer not available for kadupada:', error);
+        showGeoServerWarning();
     });
-    window.pimpalgaon = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+    
+    window.pimpalgaon = L.tileLayer.wms(geoserverUrl + '/wms', {
         layers: 'geoapp:pimpalgaon',
         transparent: true,
         format: 'image/png',
+    }).on('tileerror', function(error) {
+        console.log('GeoServer not available for pimpalgaon:', error);
+        showGeoServerWarning();
     });
-    window.jambhore = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+    
+    window.jambhore = L.tileLayer.wms(geoserverUrl + '/wms', {
         layers: 'geoapp:jambhore',
         transparent: true,
         format: 'image/png',
+    }).on('tileerror', function(error) {
+        console.log('GeoServer not available for jambhore:', error);
+        showGeoServerWarning();
     });
-    window.mohagoan = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+    
+    window.mohagoan = L.tileLayer.wms(geoserverUrl + '/wms', {
         layers: 'geoapp:mohagoan',
         transparent: true,
         format: 'image/png',
+    }).on('tileerror', function(error) {
+        console.log('GeoServer not available for mohagoan:', error);
+        showGeoServerWarning();
     });
+    
     console.log('Created default shapefile layers');
     {% endif %}
+    
+    // Function to show GeoServer warning
+    function showGeoServerWarning() {
+        if (!window.geoserverWarningShown) {
+            window.geoserverWarningShown = true;
+            var warningDiv = document.createElement('div');
+            warningDiv.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: #ff6b6b;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            `;
+            warningDiv.innerHTML = `
+                <strong>⚠️ GeoServer Not Available</strong><br>
+                Polygon layers cannot be displayed because GeoServer is not running.<br>
+                <small>This is normal for Railway deployment without GeoServer setup.</small>
+                <button onclick="this.parentElement.remove()" style="float: right; background: none; border: none; color: white; font-size: 18px; cursor: pointer;">×</button>
+            `;
+            document.body.appendChild(warningDiv);
+            
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (warningDiv.parentElement) {
+                    warningDiv.remove();
+                }
+            }, 10000);
+        }
+    }
 
     // Claimants data for highlighting
     var claimantsData = null;

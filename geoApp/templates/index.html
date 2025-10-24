@@ -442,7 +442,7 @@ $('.pin').on('click', function(){
 
      // Create shapefile layers but don't add them to overlayMaps (users can select via dropdown)
     {% for s in shp %}
-    var {{ s.name }} = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+    window.{{ s.name }} = L.tileLayer.wms('{{ geoserver_url }}/wms', {
         layers: 'geoapp:{{ s.name }}',
         transparent: true,
         format: 'image/png',
@@ -450,6 +450,7 @@ $('.pin').on('click', function(){
     
     // Layer is created but not added to overlayMaps checkboxes
     // Users can select these layers through the dropdown filters instead
+    console.log('Created shapefile layer:', '{{ s.name }}');
     
     {% endfor %}
 
@@ -458,6 +459,7 @@ $('.pin').on('click', function(){
     var highlightedSerialNumbers = [];
     var availableVillages = [];
     var currentSelectedVillage = null;
+    var currentVillageLayer = null; // Track currently displayed village layer
     
     // ===== SCALABLE VILLAGE CONFIGURATION SYSTEM =====
     // This system automatically handles any number of villages
@@ -956,12 +958,33 @@ $('.pin').on('click', function(){
         var taluka = document.getElementById('talukaSelect').value;
         var village = document.getElementById('villageSelect').value;
 
-        // Zoom to village if selected
-        if (state && district && taluka && village) {
-            var villageKey = state + '.' + district + '.' + taluka + '.' + village;
-            if (locationCoordinates[villageKey]) {
-                map.setView(locationCoordinates[villageKey].center, locationCoordinates[villageKey].zoom);
+        // Remove previous village layer if exists
+        if (currentVillageLayer) {
+            map.removeLayer(currentVillageLayer);
+            currentVillageLayer = null;
+            console.log('Removed previous village layer');
+        }
+
+        // If village selected, add its base shapefile layer
+        if (village) {
+            var config = getVillageConfig(village);
+            var layerName = config.shapefileName;
+            
+            console.log('Village selected:', village, 'Layer name:', layerName);
+            
+            // Find the corresponding shapefile layer variable
+            // Layer variables are created like: var kadupada = L.tileLayer.wms(...)
+            if (window[layerName]) {
+                currentVillageLayer = window[layerName];
+                currentVillageLayer.addTo(map);
+                console.log('Added base layer:', layerName);
+            } else {
+                console.log('Layer not found:', layerName, 'Available layers:', Object.keys(window).filter(k => k.includes('kadupada') || k.includes('pimpalgaon') || k.includes('jambhore') || k.includes('mohagoan')));
             }
+            
+            // Zoom to village
+            map.setView(config.coordinates, config.zoom);
+            console.log('Zoomed to village:', village, 'at', config.coordinates);
         }
 
         // If a village is selected, fetch its claimants data

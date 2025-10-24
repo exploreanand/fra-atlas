@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.browser.print@0.0.4/dist/leaflet.browser.print.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
     <link rel="stylesheet" href="{% static './lib/MarkerCluster.css' %}">
     <link rel="stylesheet" href="{% static './lib/MarkerCluster.Default.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -382,6 +383,7 @@
 </html>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="{% static './data/leaflet.markercluster.js' %}"></script>
@@ -441,7 +443,9 @@ $('.pin').on('click', function(){
 
 
      // Create shapefile layers but don't add them to overlayMaps (users can select via dropdown)
+    console.log('Total shapefiles in database:', {{ shp|length }});
     {% for s in shp %}
+    console.log('Creating layer for shapefile:', '{{ s.name }}');
     window.{{ s.name }} = L.tileLayer.wms('{{ geoserver_url }}/wms', {
         layers: 'geoapp:{{ s.name }}',
         transparent: true,
@@ -453,6 +457,31 @@ $('.pin').on('click', function(){
     console.log('Created shapefile layer:', '{{ s.name }}');
     
     {% endfor %}
+    {% if not shp %}
+    console.log('WARNING: No shapefiles found in database! Creating default layers...');
+    // Create default layers for known villages
+    window.kadupada = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+        layers: 'geoapp:kadupada',
+        transparent: true,
+        format: 'image/png',
+    });
+    window.pimpalgaon = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+        layers: 'geoapp:pimpalgaon',
+        transparent: true,
+        format: 'image/png',
+    });
+    window.jambhore = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+        layers: 'geoapp:jambhore',
+        transparent: true,
+        format: 'image/png',
+    });
+    window.mohagoan = L.tileLayer.wms('{{ geoserver_url }}/wms', {
+        layers: 'geoapp:mohagoan',
+        transparent: true,
+        format: 'image/png',
+    });
+    console.log('Created default shapefile layers');
+    {% endif %}
 
     // Claimants data for highlighting
     var claimantsData = null;
